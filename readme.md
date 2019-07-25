@@ -6,13 +6,14 @@ This is actually quite a lot of people. So, why Budgeteer? Let me break down the
 
 ## The Problem
 
-Monthly bills = 12 bill/year
-Paid every two weeks = 52 paychecks/year
+- Monthly bills = 12 bill/year
+- Paid every two weeks = 52 paychecks/year
 
 If you're like me and live off of two paychecks to cover monthly expenses, this represents a conundrum.
-52/2 = 26
-26/2 = 13
-13, not 12.
+- 52/2 = 26
+- 26/2 = 13
+- 13, not 12.
+
 So, I get paid for 13 "months", but have 12 months of bills. How do I decide what bills get paid with which paychecks? Enter Budgeteer.
 
 ## The Solution
