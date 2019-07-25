@@ -18,7 +18,7 @@ So, I get paid for 13 "months", but have 12 months of bills. How do I decide wha
 
 ## The Solution
 
-The solution that Budgeteer gives is this: you define the monthly bills and when you get paid, then assign bills to paychecks. That's it. Simple, low-complexity solution.
+The solution that Budgeteer gives is this: you define the monthly bills and when you get paid, assign bills to paychecks. That's it. Simple, low-complexity solution.
 Currently, I'll be hosting the app on my own private server for my own private use. But here's the source code. If you like it, you can use it!
 
 ## Under Construction!
