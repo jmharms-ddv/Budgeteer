@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateBillPaycheckTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('bill_paycheck', function (Blueprint $table) {
+            $table->unsignedBigInteger('bill_id');
+            $table->unsignedBigInteger('paycheck_id');
+            $table->date('due_on');
+            $table->date('paid_on')->nullable();
+            $table->timestamps();
+
+            $table->foreign('bill_id')->references('id')->on('bills');
+            $table->foreign('paycheck_id')->references('id')->on('paychecks');
+            
+            $table->primary(['bill_id', 'paycheck_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('bill_paycheck');
+    }
+}
