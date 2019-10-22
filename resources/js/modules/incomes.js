@@ -13,16 +13,18 @@ export const incomes = {
     incomesLoadStatus: 0,
 
     income: {},
-    incomeLoadStatus: 0
+    incomeLoadStatus: 0,
+
+    addIncomeStatus: 0
   },
 
   actions: {
     loadIncomes({ commit }) {
-      commit('setCafesLoadStatus', 1);
+      commit('setIncomesLoadStatus', 1);
 
       IncomeAPI.getIncomes()
         .then(res => {
-          commit('setIncomes', res.data);
+          commit('setIncomes', res.data.data);
           commit('setIncomesLoadStatus', 2);
         })
         .catch(err => {
@@ -31,11 +33,11 @@ export const incomes = {
         });
     },
     loadIncome({ commit }, data) {
-      commit('setCafeLoadStatus', 1);
+      commit('setIncomeLoadStatus', 1);
 
       IncomeAPI.getIncome(data.id)
         .then(res => {
-          commit('setIncome', res.data);
+          commit('setIncome', res.data.data);
           commit('setIncomeLoadStatus', 2);
         })
         .catch(err => {
@@ -43,6 +45,18 @@ export const incomes = {
           commit('setIncomeLoadStatus', 3);
         });
 
+    },
+    addIncome({ commit, state, dispatch }, data) {
+      commit('setAddIncomeStatus', 1);
+
+      IncomeAPI.postIncome(data.name)
+        .then(res => {
+          commit('setAddIncomeStatus', 2);
+          dispatch('loadIncomes');
+        })
+        .catch(err => {
+          commit('setAddIncomeStatus', 3);
+        });
     }
   },
 
@@ -61,6 +75,10 @@ export const incomes = {
 
     setIncome(state, income) {
       state.income = income;
+    },
+
+    setAddIncomeStatus(state, status) {
+      state.addIncomeStatus = status;
     }
   },
 
@@ -79,6 +97,10 @@ export const incomes = {
 
     getIncome(state){
       return state.income;
+    },
+
+    getAddIncomeStatus(state) {
+      return state.addIncomeStatus;
     }
   }
 }

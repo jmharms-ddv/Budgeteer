@@ -4,32 +4,42 @@
 
 <template>
   <div id="home">
-    <span v-show="incomesLoadStatus == 1">Loading</span>
-    <span v-show="incomesLoadStatus == 2">Loaded!</span>
-    <span v-show="incomesLoadStatus == 3">Not Loaded!</span>
+    Manage your sources of income <router-link to="/incomes" class="btn btn-base">Here</router-link>
   </div>
 </template>
 
 <script>
   export default {
     created() {
+      this.$store.dispatch('loadUser');
       this.$store.dispatch('loadIncomes');
     },
 
     computed: {
-      /*
-       Gets the incomes load status
-     */
-     incomesLoadStatus(){
-       return this.$store.getters.getIncomesLoadStatus;
-     },
-
-     /*
-       Gets the incomes
-     */
-     incomes(){
-       return this.$store.getters.getIncomes;
-     }
+      /**
+        Gets the incomes
+        */
+      incomes(){
+        return this.$store.getters.getIncomes;
+      },
+      /**
+        Gets the incomes load status
+        */
+      incomesLoadStatus(){
+        return this.$store.getters.getIncomesLoadStatus;
+      },
+      /**
+        Gets the user
+        */
+      user() {
+        return this.$store.getters.getUser;
+      },
+      /**
+        Gets the user load status
+        */
+      userLoadStatus() {
+        return this.$store.getters.getUserLoadStatus();
+      }
     }
   }
 </script>

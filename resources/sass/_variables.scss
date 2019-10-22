@@ -17,3 +17,28 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+
+// Custom Colors
+$base: #1D4880;
+$sub1: #0F2440;
+$sub2: #122B4D;
+$accent1: #204F8C;
+$accent2: #173966;
+
+$colors: (
+  "blue": $blue,
+  "indigo": $indigo,
+  "purple": $purple,
+  "pink": $pink,
+  "red": $red,
+  "orange": $orange,
+  "yellow": $yellow,
+  "green": $green,
+  "teal": $teal,
+  "cyan": $cyan,
+  "base": $base,
+  "sub1": $sub1,
+  "sub2": $sub2,
+  "accent1": $accent1,
+  "accent2": $accent2
+) !default;

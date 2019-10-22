@@ -4,5 +4,20 @@
 // Variables
 @import 'variables';
 
+
+$theme-colors: (
+  "base": $base,
+  "sub1": $sub1,
+  "sub2": $sub2,
+  "accent1": $accent1,
+  "accent2": $accent2,
+);
+
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/src/index.scss';
+
+// Generate `.bg-*` color utilities
+// @each $color, $value in $theme-colors {
+//  @include bg-variant('.bg-#{$color}', $value);
+//}

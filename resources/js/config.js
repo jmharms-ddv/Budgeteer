@@ -1,17 +1,19 @@
 /*
     Defines the API route we are using.
 */
-var api_url = '';
+var url = 'http://budgeteer.homestead';
+var api_url = url + '/api';
 
 switch( process.env.NODE_ENV ){
   case 'development':
-    api_url = 'http://budgeteer.homestead/api';
+    api_url = url + '/api';
   break;
   case 'production':
-    api_url = 'http://budgeteer.ironmthome.com/api';
+    api_url = url + '/api';
   break;
 }
 
 export const BUDGETEER_CONFIG = {
+  URL: url,
   API_URL: api_url,
 }

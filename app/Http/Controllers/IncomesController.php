@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Income;
+use App\Http\Resources\IncomeResource;
 
 class IncomesController extends Controller
 {
@@ -16,15 +17,20 @@ class IncomesController extends Controller
     {
         $this->middleware('auth:api');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $this->authorize('index', Income::class);
+
+        $incomes = Income::where('user_id', $request->user()->id)->get();
+
+        return IncomeResource::collection($incomes);
     }
 
     /**
@@ -35,7 +41,28 @@ class IncomesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->method('post')) {
+            $request->validate([
+                'name' => 'required|string'
+            ]);
+            $this->authorize('create', Income::class);
+            $income = new Income;
+            $income->user_id = $request->user()->id;
+        } else {
+            $request->validate([
+                'id' => 'required|int',
+                'user_id' => 'required|int',
+                'name' => 'required|string'
+            ]);
+            $income = Income::findOrFail($request->input('id'));
+            $this->authorize('update', $income);
+        }
+
+        $income->name = $request->input('name');
+
+        if($income->save()) {
+            return new IncomeResource($income);
+        }
     }
 
     /**
@@ -46,7 +73,11 @@ class IncomesController extends Controller
      */
     public function show($id)
     {
-        //
+        $income = Income::findOrFail($id);
+
+        $this->authorize('view', $income);
+
+        return new IncomeResource($income);
     }
 
     /**
@@ -57,6 +88,12 @@ class IncomesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $income = Income::findOrFail($id);
+
+        $this->authorize('delete', $income);
+
+        if($income->delete()) {
+            return new IncomeResource($income);
+        }
     }
 }

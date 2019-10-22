@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paycheck extends Model
 {
-    income() {
+    public function income() {
         return $this->belongsTo('App\Income');
     },
 
-    bills() {
+    public function bills() {
         return $this->belongsToMany('App\Bill')->withPivot(['due_on', 'paid_on'])->withTimestamps();
     }
 }
