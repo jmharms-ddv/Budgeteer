@@ -19,10 +19,10 @@ export const incomes = {
   },
 
   actions: {
-    loadIncomes({ commit }) {
+    loadIncomes({ commit }, data) {
       commit('setIncomesLoadStatus', 1);
-
-      IncomeAPI.getIncomes()
+      let options = data.with ? data.with : [];
+      IncomeAPI.getIncomes({ with: options })
         .then(res => {
           commit('setIncomes', res.data.data);
           commit('setIncomesLoadStatus', 2);

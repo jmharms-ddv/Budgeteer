@@ -6,16 +6,32 @@ import { BUDGETEER_CONFIG } from '../config.js';
 export default {
   /*
       GET     /api/income
+      @param options {object}
+        can contain with [array]
+      @return Promise
   */
-  getIncomes: function(){
-    return axios.get( BUDGETEER_CONFIG.API_URL + '/income' );
+  getIncomes: function(options) {
+    let optionsStr = '';
+    if(options) {
+      optionsStr = '?';
+      if(options.with && options.with.length != 0) {
+        optionsStr += (optionsStr == '?' ? 'with=' + options.with[0] : '&with=' + options.with[0]);
+        for(let i in options.with) {
+          if(i == 0) continue;
+          optionsStr += ':' + options.with[i];
+        }
+      } else {
+        optionsStr = '';
+      }
+    }
+    return axios.get(BUDGETEER_CONFIG.API_URL + '/income' + optionsStr);
   },
 
   /*
       GET     /api/income/{id}
   */
-  getIncome: function(id){
-    return axios.get( BUDGETEER_CONFIG.API_URL + '/income' + id);
+  getIncome: function(id) {
+    return axios.get(BUDGETEER_CONFIG.API_URL + '/income/' + id);
   },
 
   /*

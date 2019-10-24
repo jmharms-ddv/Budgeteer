@@ -28,7 +28,11 @@ class IncomesController extends Controller
     {
         $this->authorize('index', Income::class);
 
-        $incomes = Income::where('user_id', $request->user()->id)->get();
+        if($request->has('with')) {
+            $incomes = Income::where('user_id', $request->user()->id)->with(explode(":", $request->input('with')))->get();
+        } else {
+            $incomes = Income::where('user_id', $request->user()->id)->get();
+        }
 
         return IncomeResource::collection($incomes);
     }
@@ -50,8 +54,8 @@ class IncomesController extends Controller
             $income->user_id = $request->user()->id;
         } else {
             $request->validate([
-                'id' => 'required|int',
-                'user_id' => 'required|int',
+                'id' => 'required|integer',
+                'user_id' => 'required|integer',
                 'name' => 'required|string'
             ]);
             $income = Income::findOrFail($request->input('id'));

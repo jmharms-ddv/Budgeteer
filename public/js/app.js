@@ -2108,7 +2108,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     this.$store.dispatch('loadUser');
-    this.$store.dispatch('loadIncomes');
+    this.$store.dispatch('loadIncomes', {
+      "with": []
+    });
   },
   computed: {
     /**
@@ -2250,11 +2252,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     this.$store.dispatch('loadIncome', {
       id: this.$route.params.id
     });
+  },
+  computed: {
+    income: function income() {
+      return this.$store.getters.getIncome;
+    },
+    incomeLoadStatus: function incomeLoadStatus() {
+      return this.$store.getters.getIncomeLoadStatus;
+    }
   }
 });
 
@@ -2302,7 +2318,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.$store.dispatch('loadUser');
-    this.$store.dispatch('loadIncomes');
+    this.$store.dispatch('loadIncomes', {
+      "with": ['paychecks']
+    });
   },
   methods: {
     saveNewIncome: function saveNewIncome(name, event) {
@@ -68043,7 +68061,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card bg-base text-white" }, [
+  return _c("div", { staticClass: "card border-base" }, [
     _c("div", { staticClass: "card-body" }, [
       _c(
         "h5",
@@ -68275,19 +68293,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { attrs: { id: "home" } },
-    [
-      _vm._v("\n  Manage your sources of income "),
-      _c(
-        "router-link",
-        { staticClass: "btn btn-base", attrs: { to: "/incomes" } },
-        [_vm._v("Here")]
-      )
-    ],
-    1
-  )
+  return _c("div", { attrs: { id: "home" } })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -68411,16 +68417,20 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c(
+    "div",
+    { attrs: { id: "income" } },
+    [
+      _vm.incomeLoadStatus == 1 ? [_vm._v("\n    Loading...\n  ")] : _vm._e(),
+      _vm._v(" "),
+      _vm.incomeLoadStatus == 2
+        ? [_c("h3", [_vm._v(_vm._s(_vm.income.name))]), _vm._v(" "), _c("hr")]
+        : _vm._e()
+    ],
+    2
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { attrs: { id: "income" } }, [_c("h3")])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -84489,16 +84499,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   /*
       GET     /api/income
+      @param options {object}
+        can contain with [array]
+      @return Promise
   */
-  getIncomes: function getIncomes() {
-    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["BUDGETEER_CONFIG"].API_URL + '/income');
+  getIncomes: function getIncomes(options) {
+    var optionsStr = '';
+
+    if (options) {
+      optionsStr = '?';
+
+      if (options["with"] && options["with"].length != 0) {
+        optionsStr += optionsStr == '?' ? 'with=' + options["with"][0] : '&with=' + options["with"][0];
+
+        for (var i in options["with"]) {
+          if (i == 0) continue;
+          optionsStr += ':' + options["with"][i];
+        }
+      } else {
+        optionsStr = '';
+      }
+    }
+
+    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["BUDGETEER_CONFIG"].API_URL + '/income' + optionsStr);
   },
 
   /*
       GET     /api/income/{id}
   */
   getIncome: function getIncome(id) {
-    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["BUDGETEER_CONFIG"].API_URL + '/income' + id);
+    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["BUDGETEER_CONFIG"].API_URL + '/income/' + id);
   },
 
   /*
@@ -85010,10 +85040,13 @@ var incomes = {
     addIncomeStatus: 0
   },
   actions: {
-    loadIncomes: function loadIncomes(_ref) {
+    loadIncomes: function loadIncomes(_ref, data) {
       var commit = _ref.commit;
       commit('setIncomesLoadStatus', 1);
-      _api_income_js__WEBPACK_IMPORTED_MODULE_0__["default"].getIncomes().then(function (res) {
+      var options = data["with"] ? data["with"] : [];
+      _api_income_js__WEBPACK_IMPORTED_MODULE_0__["default"].getIncomes({
+        "with": options
+      }).then(function (res) {
         commit('setIncomes', res.data.data);
         commit('setIncomesLoadStatus', 2);
       })["catch"](function (err) {

@@ -31,7 +31,9 @@
 
     created() {
       this.$store.dispatch('loadUser');
-      this.$store.dispatch('loadIncomes');
+      this.$store.dispatch('loadIncomes', {
+        with: ['paychecks']
+      });
     },
 
     methods: {

@@ -4,7 +4,7 @@
 
 <template>
   <div id="home">
-    Manage your sources of income <router-link to="/incomes" class="btn btn-base">Here</router-link>
+
   </div>
 </template>
 
@@ -12,20 +12,22 @@
   export default {
     created() {
       this.$store.dispatch('loadUser');
-      this.$store.dispatch('loadIncomes');
+      this.$store.dispatch('loadIncomes', {
+        with: []
+      });
     },
 
     computed: {
       /**
         Gets the incomes
         */
-      incomes(){
+      incomes() {
         return this.$store.getters.getIncomes;
       },
       /**
         Gets the incomes load status
         */
-      incomesLoadStatus(){
+      incomesLoadStatus() {
         return this.$store.getters.getIncomesLoadStatus;
       },
       /**

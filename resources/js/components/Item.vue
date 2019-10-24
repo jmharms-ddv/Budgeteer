@@ -1,5 +1,5 @@
 <template>
-  <div class="card bg-base text-white">
+  <div class="card border-base">
     <div class="card-body">
       <h5 class="card-title text-center">
         <slot name="default" :value="value">
