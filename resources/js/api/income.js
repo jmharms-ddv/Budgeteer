@@ -14,7 +14,7 @@ export default {
     let optionsStr = '';
     if(options) {
       optionsStr = '?';
-      if(options.with && options.with.length != 0) {
+      if(options.hasOwnProperty('with') && options.with.length != 0) {
         optionsStr += (optionsStr == '?' ? 'with=' + options.with[0] : '&with=' + options.with[0]);
         for(let i in options.with) {
           if(i == 0) continue;
