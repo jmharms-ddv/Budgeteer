@@ -13,6 +13,7 @@ Vue.use( Vuex )
     Imports all of the modules used in the application to build the data store.
 */
 import { incomes } from './modules/incomes.js'
+import { bills } from './modules/bills.js'
 import { users } from './modules/users.js'
 
 /*
@@ -21,6 +22,7 @@ import { users } from './modules/users.js'
 export default new Vuex.Store({
     modules: {
       incomes,
+      bills,
       users
     }
 });
