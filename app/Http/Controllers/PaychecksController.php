@@ -20,41 +20,70 @@ class PaychecksController extends Controller
     {
         $this->authorize('index', Paycheck::class);
 
+        $optionsArr = $this->extractOptions($request);
+
         $paychecks = Paycheck::whereHas('income', function(Builder $query) {
             $query->where('user_id', $request->user()->id);
-        })->get();
+        })->with($optionsArr['with'])->get();
 
         return PaycheckResource::collection($paychecks);
     }
 
     /**
-     * Store a newly created resource in storage or update a resource in storage.
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        if($request->method('post')) {
-            $request->validate([
-                'income_id' => 'required|integer',
-                'amount' => 'required|digits_between:2,8'
-            ]);
-            $income = Income::findOrFail($request->input('income_id'));
-            $paycheck = new Paycheck;
-            $paycheck->income_id = $request->input('income_id');
-            $this->authorize('create', $paycheck);
-        } else {
-            $request->validate([
-                'id' => 'required|integer',
-                'income_id' => 'required|integer',
-                'amount' => 'required|digits_between:2,8'
-            ]);
-            $paycheck = Paycheck::findOrFail($request->input('id'));
-            $this->authorize('update', $paycheck);
-        }
+        $request->validate([
+            'income_id' => 'required|integer',
+            'amount' => 'nullable|digits_between:2,8',
+            'amount_project' => 'nullable|digits_between:2,8',
+            'paid_on' => 'required|date'
+        ]);
 
-        $paycheck->name = $request->input('name');
+        $income = Income::findOrFail($request->input('income_id'));
+
+        $paycheck = new Paycheck;
+
+        $paycheck->income_id = $request->input('income_id');
+
+        $this->authorize('create', $paycheck);
+
+        $paycheck->amount = $request->input('amount');
+        $paycheck->amount_project = $request->input('amount_project');
+        $paycheck->paid_on = $request->input('paid_on');
+
+        if($paycheck->save()) {
+            return new PaycheckResource($paycheck);
+        }
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'income_id' => 'nullable|integer',
+            'amount' => 'nullable|digits_between:2,8',
+            'amount_project' => 'nullable|digits_between:2,8',
+            'paid_on' => 'nullable|date'
+        ]);
+
+        $paycheck = Paycheck::findOrFail($request->input('id'));
+
+        $this->authorize('update', $paycheck);
+
+        $paycheck->amount = $request->input('amount');
+        $paycheck->amount_project = $request->input('amount_project');
+        $paycheck->paid_on = $request->input('paid_on');
 
         if($paycheck->save()) {
             return new PaycheckResource($paycheck);

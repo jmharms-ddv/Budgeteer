@@ -28,39 +28,55 @@ class IncomesController extends Controller
     {
         $this->authorize('index', Income::class);
 
-        if($request->has('with')) {
-            $incomes = Income::where('user_id', $request->user()->id)->with(explode(":", $request->input('with')))->get();
-        } else {
-            $incomes = Income::where('user_id', $request->user()->id)->get();
-        }
+        $optionsArr = $this->extractOptions($request);
+
+        $incomes = Income::where('user_id', $request->user()->id)->with($optionsArr['with'])->get();
 
         return IncomeResource::collection($incomes);
     }
 
     /**
-     * Store a newly created resource in storage or update a resource in storage.
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        if($request->method('post')) {
-            $request->validate([
-                'name' => 'required|string'
-            ]);
-            $this->authorize('create', Income::class);
-            $income = new Income;
-            $income->user_id = $request->user()->id;
-        } else {
-            $request->validate([
-                'id' => 'required|integer',
-                'user_id' => 'required|integer',
-                'name' => 'required|string'
-            ]);
-            $income = Income::findOrFail($request->input('id'));
-            $this->authorize('update', $income);
+        $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $this->authorize('create', Income::class);
+
+        $income = new Income;
+
+        $income->user_id = $request->user()->id;
+
+        $income->name = $request->input('name');
+
+        if($income->save()) {
+            return new IncomeResource($income);
         }
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'user_id' => 'required|integer',
+            'name' => 'required|string'
+        ]);
+
+        $income = Income::findOrFail($request->input('id'));
+
+        $this->authorize('update', $income);
 
         $income->name = $request->input('name');
 
