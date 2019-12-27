@@ -21,8 +21,8 @@ export const bills = {
   actions: {
     loadBills({ commit }, data) {
       commit('setBillsLoadStatus', 1);
-      let options = data.with ? data.with : [];
-      BillAPI.getBills({ with: options })
+      
+      BillAPI.getBills(data)
         .then(res => {
           commit('setBills', res.data.data);
           commit('setBillsLoadStatus', 2);
