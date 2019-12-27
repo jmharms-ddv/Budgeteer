@@ -11,6 +11,6 @@ class Paycheck extends Model
     }
 
     public function bills() {
-        return $this->belongsToMany('App\Bill')->withPivot(['due_on', 'paid_on'])->withTimestamps();
+        return $this->belongsToMany('App\Bill')->withPivot(['amount', 'amount_project', 'due_on', 'paid_on'])->withTimestamps();
     }
 }
