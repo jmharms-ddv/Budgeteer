@@ -3,11 +3,11 @@
     <div class="card-deck mb-4" v-for="row in rowsFull">
       <template v-for="col in deckSize">
         <item :value="items[(row - 1)*deckSize + col - 1]"
-              :url="url"
               :from="from"
               :open="canOpen((row - 1)*deckSize + col - 1)"
               :remove="remove"
               :edit="edit"
+              @open="openItem((row - 1)*deckSize + col - 1)"
               @delete="deleteItem((row - 1)*deckSize + col - 1)"
               @edit="editItem((row - 1)*deckSize + col - 1)">
           <template v-if="content" #default="slotProps">
@@ -21,11 +21,11 @@
         <div class="card-deck mb-4">
           <template v-for="col in colsInPartialRow">
             <item :value="items[rowsFull*deckSize + col - 1]"
-                  :url="url"
                   :from="from"
                   :open="canOpen(rowsFull*deckSize + col - 1)"
                   :remove="remove"
                   :edit="edit"
+                  @open="openItem(rowsFull*deckSize + col - 1)"
                   @delete="deleteItem(rowsFull*deckSize + col - 1)"
                   @edit="editItem(rowsFull*deckSize + col - 1)">
               <template v-if="content" #default="slotProps">
@@ -35,32 +35,12 @@
           </template>
         </div>
       </div>
-      <div v-if="add" :class="'col-sm-' + 12/deckSize">
-        <div class="card border-base text-center">
-          <a class="card-body blank-body" @click="addItem()">
-            <h1 class="card-title">+</h1>
-          </a>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
-<style>
-  .blank-body:hover {
-    background-color: #1D4880;
-    color: white;
-  }
-  .blank-body .card-title {
-    color: #1D4880;
-  }
-  .blank-body:hover .card-title {
-    color: white;
-  }
-</style>
-
 <script>
-  import Item from './Item.vue'
+  import Item from './Item.vue';
   export default {
     components: {
       Item
@@ -70,22 +50,8 @@
         type: Array,
         required: true
       },
-      url: {
-        type: String,
-        required: true
-      },
-      itemname: {
-        type: String,
-        default: function() {
-          return this.url.charAt(0).toUpperCase() + this.url.slice(1);
-        }
-      },
       from: {
         type: String
-      },
-      add: {
-        type: Boolean,
-        default: false
       },
       open: {
         type: Boolean,
@@ -125,12 +91,16 @@
       },
       content: {
         type: String
+      },
+      size: {
+        type: Number,
+        default: 3
       }
     },
 
     data() {
       return {
-        deckSize: 3
+        deckSize: this.size
       };
     },
 
@@ -140,6 +110,9 @@
       },
       addItem() {
         this.$emit('add-item');
+      },
+      openItem(index) {
+        this.$emit('open-item', index);
       },
       deleteItem(index) {
         this.$emit('delete-item', index);

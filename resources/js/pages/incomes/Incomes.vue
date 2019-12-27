@@ -1,5 +1,5 @@
 <template>
-  <div id="incomes">
+  <div id="incomes" class="container-fluid">
     <h3>Sources of Income</h3>
     <hr>
     <make-income :show="showMakeForm"
@@ -11,7 +11,8 @@
                 from="incomes"
                 open
                 add
-                @add-item="showMakeForm = true"></collection>
+                @add-item="showMakeForm = true"
+                size="6"></collection>
   </div>
 </template>
 
