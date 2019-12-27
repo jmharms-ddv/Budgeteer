@@ -18,13 +18,13 @@ class IncomeResource extends JsonResource
     public function toArray($request)
     {
         return [
-          'id' => $this->id,
-          'user_id' => $this->user_id,
-          'user' => new UserResource($this->whenLoaded('user')),
-          'paychecks' => PaycheckResource::collection($this->whenLoaded('paychecks')),
-          'name' => $this->name,
-          'created_at' => $this->created_at,
-          'updated_at' => $this->updated_at
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'paychecks' => PaycheckResource::collection($this->whenLoaded('paychecks')),
+            'name' => $this->name,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }
