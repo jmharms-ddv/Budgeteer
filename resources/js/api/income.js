@@ -29,6 +29,7 @@ export default {
 
   /*
       GET     /api/income/{id}
+      @param id int
   */
   getIncome: function(id) {
     return axios.get(BUDGETEER_CONFIG.API_URL + '/income/' + id);

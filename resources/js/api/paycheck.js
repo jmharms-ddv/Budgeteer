@@ -28,6 +28,7 @@ export default {
   },
   /*
     GET   /api/paycheck/{id}
+    @param id int
   */
   getPaycheck: function(id) {
     return axios.get(BUDGETEER_CONFIG.API_URL + '/paycheck/' + id);
