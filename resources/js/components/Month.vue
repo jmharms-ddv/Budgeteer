@@ -2,6 +2,7 @@
   <div class="card mb-2 mt-2" :class="{ 'border-base': isSelected }" style="display: flex;">
     <div class="card-body">
       <h5 class="card-title">{{ monthsStr[month][0] }} {{ year }}</h5>
+
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
@@ -15,7 +16,7 @@
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
-            Paychecks <button type="button" class="btn btn-outline-base btn-sm">+</button>
+            Paychecks <button type="button" :disabled="showmakepaycheck" class="btn btn-outline-base btn-sm" @click="$emit('open-make-paycheck', startDate)">+</button>
           </div>
           <hr>
           <collection :items="paychecksMonth"
@@ -27,11 +28,13 @@
 </template>
 
 <script>
+  import MakePaycheck from './paychecks/MakePaycheck.vue';
   import Collection from './Collection.vue';
   import moment from 'moment';
   export default {
     components: {
-      Collection
+      Collection,
+      'make-paycheck': MakePaycheck
     },
     props: {
       month: {
@@ -47,7 +50,11 @@
         default: false
       },
       incomesshown: {
-        type: String,
+        type: Number,
+        required: true
+      },
+      showmakepaycheck: {
+        type: Boolean,
         required: true
       }
     },
@@ -71,14 +78,21 @@
           ['October', 31],
           ['November', 30],
           ['December', 31]
-        ]
+        ],
+        showMakePaycheckForm: false
       };
     },
 
     computed: {
+      /**
+        Date of the first day of the month
+        */
       startDate() {
         return moment([this.year, this.month, 1]).format("YYYY-MM-DD");
       },
+      /**
+        Date of the last day of the month
+        */
       endDate() {
         return moment([this.year, this.month, this.monthsStr[this.month][1]]).format("YYYY-MM-DD");
       },

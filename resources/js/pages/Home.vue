@@ -4,15 +4,14 @@
 
 <template>
   <div id="home" class="container-fluid">
-    <select class="custom-select custom-select-lg mb-3" v-model="incomesSelected">
-      <option value="*" selected>All Incomes</option>
+    <select class="custom-select custom-select-lg mb-3" v-model.number="incomesSelected">
+      <option value="0" selected>All Incomes</option>
       <option v-for="income in incomes" :key="income.id" :value="income.id">
         {{ income.name }}
       </option>
     </select>
     <calendar :total-months="3"
               :incomes="incomesSelected">
-
     </calendar>
   </div>
 </template>
@@ -27,7 +26,7 @@
 
     data() {
       return {
-        incomesSelected: "*"
+        incomesSelected: 0
       };
     },
 
@@ -69,7 +68,7 @@
         */
       incomesSelect() {
         return this.incomes.filter((income) => {
-          if(this.incomesSelected == "*") return true;
+          if(this.incomesSelected == 0) return true;
           return income.id == this.incomesSelected;
         });
       }

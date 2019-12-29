@@ -1,6 +1,10 @@
 <template>
   <div id="calendar">
-
+    <make-paycheck :show="showMakePaycheckForm"
+                    :income="incomes"
+                    :paidon="paidon"
+                    @close="showMakePaycheckForm = false"
+                    @save="onSavePaycheck"></make-paycheck>
     <div class="row">
       <div class="col-sm-1">
         <button type="button" class="btn btn-secondary btn-lg btn-block h-100 d-inline-block" @click="monthDown()">❮</button>
@@ -12,7 +16,9 @@
                 :is-selected="index - 1 == selectedMonth"
                 :month="month.months[index - 1][0]"
                 :year="month.months[index - 1][1]"
-                :incomesshown="incomes">
+                :incomesshown="incomes"
+                :showmakepaycheck="showMakePaycheckForm"
+                @open-make-paycheck="onOpenMakePaycheck">
           </month>
         </div>
       </div>
@@ -38,11 +44,13 @@
 
 <script>
   import Month from './Month.vue';
+  import MakePaycheck from './paychecks/MakePaycheck.vue';
   import { cloneDeep } from 'lodash';
   import moment from 'moment';
   export default {
     components: {
-      Month
+      Month,
+      'make-paycheck': MakePaycheck
     },
 
     props: {
@@ -53,7 +61,7 @@
         }
       },
       incomes: {
-        type: String,
+        type: Number,
         required: true
       },
       paychecks: {
@@ -75,7 +83,9 @@
         month: {
           months: []
         },
-        nowMonth: []
+        nowMonth: [],
+        showMakePaycheckForm: false,
+        paidon: null
       };
     },
 
@@ -119,6 +129,15 @@
           newMonths[0] = [newMonths[0][0] - 1, newMonths[0][1]];
         }
         this.month.months = newMonths;
+      },
+
+      onSavePaycheck(paycheck, event) {
+        this.showMakePaycheckForm = false;
+      },
+
+      onOpenMakePaycheck(startDate, event) {
+        this.paidon = startDate;
+        this.showMakePaycheckForm = true;
       }
     },
 
