@@ -49,7 +49,7 @@ export const incomes = {
     addIncome({ commit, state, dispatch }, data) {
       commit('setAddIncomeStatus', 1);
 
-      IncomeAPI.postIncome(data.name)
+      IncomeAPI.postIncome(data)
         .then(res => {
           commit('setAddIncomeStatus', 2);
           dispatch('loadIncomes');
