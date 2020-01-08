@@ -1710,12 +1710,13 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Month_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Month.vue */ "./resources/js/components/Month.vue");
-/* harmony import */ var _paychecks_MakePaycheck_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./paychecks/MakePaycheck.vue */ "./resources/js/components/paychecks/MakePaycheck.vue");
-/* harmony import */ var _paychecks_PairBillPaycheck_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./paychecks/PairBillPaycheck.vue */ "./resources/js/components/paychecks/PairBillPaycheck.vue");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _bills_MakeBill_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bills/MakeBill.vue */ "./resources/js/components/bills/MakeBill.vue");
+/* harmony import */ var _paychecks_MakePaycheck_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./paychecks/MakePaycheck.vue */ "./resources/js/components/paychecks/MakePaycheck.vue");
+/* harmony import */ var _paychecks_PairBillPaycheck_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./paychecks/PairBillPaycheck.vue */ "./resources/js/components/paychecks/PairBillPaycheck.vue");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_5__);
 //
 //
 //
@@ -1761,6 +1762,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -1769,8 +1777,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Month: _Month_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
-    'make-paycheck': _paychecks_MakePaycheck_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-    'pair-bill-paycheck': _paychecks_PairBillPaycheck_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    'make-bill': _bills_MakeBill_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    'make-paycheck': _paychecks_MakePaycheck_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+    'pair-bill-paycheck': _paychecks_PairBillPaycheck_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   props: {
     totalMonths: {
@@ -1802,7 +1811,9 @@ __webpack_require__.r(__webpack_exports__);
         months: []
       },
       nowMonth: [],
+      showMakeBillForm: false,
       showMakePaycheckForm: false,
+      starton: null,
       paidon: null
     };
   },
@@ -1822,7 +1833,7 @@ __webpack_require__.r(__webpack_exports__);
       return returnMonth;
     },
     monthUp: function monthUp() {
-      var newMonths = Object(lodash__WEBPACK_IMPORTED_MODULE_3__["cloneDeep"])(this.month.months);
+      var newMonths = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["cloneDeep"])(this.month.months);
 
       for (var i = 0; i < newMonths.length - 1; i++) {
         newMonths[i] = newMonths[i + 1];
@@ -1837,7 +1848,7 @@ __webpack_require__.r(__webpack_exports__);
       this.month.months = newMonths;
     },
     monthDown: function monthDown() {
-      var newMonths = Object(lodash__WEBPACK_IMPORTED_MODULE_3__["cloneDeep"])(this.month.months);
+      var newMonths = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["cloneDeep"])(this.month.months);
 
       for (var i = newMonths.length - 1; i > 0; i--) {
         newMonths[i] = newMonths[i - 1];
@@ -1851,8 +1862,15 @@ __webpack_require__.r(__webpack_exports__);
 
       this.month.months = newMonths;
     },
+    onSaveBill: function onSaveBill(bill, event) {
+      this.showMakeBillForm = false;
+    },
     onSavePaycheck: function onSavePaycheck(paycheck, event) {
       this.showMakePaycheckForm = false;
+    },
+    onOpenMakeBill: function onOpenMakeBill(startDate, event) {
+      this.starton = startDate;
+      this.showMakeBillForm = true;
     },
     onOpenMakePaycheck: function onOpenMakePaycheck(startDate, event) {
       this.paidon = startDate;
@@ -2285,6 +2303,10 @@ __webpack_require__.r(__webpack_exports__);
       type: Number,
       required: true
     },
+    showmakebill: {
+      type: Boolean,
+      required: true
+    },
     showmakepaycheck: {
       type: Boolean,
       required: true
@@ -2378,12 +2400,235 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       return this.bills.filter(function (bill) {
-        return moment__WEBPACK_IMPORTED_MODULE_2___default()(_this3.startDate).isSameOrBefore(bill.end_at) && moment__WEBPACK_IMPORTED_MODULE_2___default()(_this3.endDate).isSameOrAfter(bill.start_at);
+        return moment__WEBPACK_IMPORTED_MODULE_2___default()(_this3.startDate).isSameOrBefore(bill.end_on) && moment__WEBPACK_IMPORTED_MODULE_2___default()(_this3.endDate).isSameOrAfter(bill.start_on);
       });
     }
   },
   methods: {
     itemSelected: function itemSelected(id, event) {}
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/bills/MakeBill.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/bills/MakeBill.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap-vue */ "./node_modules/bootstrap-vue/esm/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _api_alert_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api/alert.js */ "./resources/js/api/alert.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'b-modal': bootstrap_vue__WEBPACK_IMPORTED_MODULE_0__["BModal"],
+    'b-alert': bootstrap_vue__WEBPACK_IMPORTED_MODULE_0__["BAlert"],
+    'b-button': bootstrap_vue__WEBPACK_IMPORTED_MODULE_0__["BButton"]
+  },
+  props: {
+    user: {
+      type: Object
+    },
+    show: {
+      type: Boolean,
+      required: true
+    },
+    starton: {
+      type: String
+    }
+  },
+  mixins: [_api_alert_js__WEBPACK_IMPORTED_MODULE_2__["default"]],
+  data: function data() {
+    return {
+      bill: {
+        name: "",
+        amount: null,
+        day_due_on: null,
+        start_at: "",
+        end_at: ""
+      }
+    };
+  },
+  validations: {
+    bill: {
+      name: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"]
+      },
+      amount: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"],
+        numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["numeric"]
+      },
+      day_due_on: {
+        integer: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["integer"],
+        minValue: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["minValue"])(1),
+        maxValue: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["maxValue"])(31)
+      },
+      start_on: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"]
+      },
+      end_on: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"]
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    this.$root.$on('bv::modal::hide', function (bvModalEvt, modalId) {
+      if (modalId == 'make-bill-modal') {
+        _this.$emit('close');
+      }
+    });
+    this.$root.$on('bv::modal::show', function (bvModalEvt, modalId) {
+      if (modalId == 'make-bill-modal') {
+        _this.bill = {
+          name: "",
+          amount: null,
+          day_due_on: null,
+          start_on: _this.starton,
+          end_on: ""
+        };
+      }
+    });
+  },
+  methods: {
+    onSave: function onSave(bill) {
+      this.$store.dispatch('addBill', bill);
+      this.$emit('save', bill);
+    }
+  },
+  computed: {
+    showModal: {
+      get: function get() {
+        return this.show;
+      },
+      set: function set(value) {
+        if (value) {
+          this.$emit('open');
+        } else {
+          this.$emit('close');
+        }
+      }
+    },
+
+    /**
+      Gets the incomes
+      */
+    incomes: function incomes() {
+      return this.$store.getters.getIncomes;
+    },
+
+    /**
+      Gets the incomes load status
+      */
+    incomesLoadStatus: function incomesLoadStatus() {
+      return this.$store.getters.getIncomesLoadStatus;
+    }
   }
 });
 
@@ -87017,6 +87262,16 @@ var render = function() {
     "div",
     { attrs: { id: "calendar" } },
     [
+      _c("make-bill", {
+        attrs: { show: _vm.showMakeBillForm, starton: _vm.starton },
+        on: {
+          close: function($event) {
+            _vm.showMakeBillForm = false
+          },
+          save: _vm.onSaveBill
+        }
+      }),
+      _vm._v(" "),
       _c("make-paycheck", {
         attrs: {
           show: _vm.showMakePaycheckForm,
@@ -87063,9 +87318,13 @@ var render = function() {
                   month: _vm.month.months[index - 1][0],
                   year: _vm.month.months[index - 1][1],
                   incomesshown: _vm.incomes,
+                  showmakebill: _vm.showMakeBillForm,
                   showmakepaycheck: _vm.showMakePaycheckForm
                 },
-                on: { "open-make-paycheck": _vm.onOpenMakePaycheck }
+                on: {
+                  "open-make-bill": _vm.onOpenMakeBill,
+                  "open-make-paycheck": _vm.onOpenMakePaycheck
+                }
               })
             }),
             1
@@ -87506,7 +87765,22 @@ var render = function() {
             "div",
             { staticClass: "card-body" },
             [
-              _vm._m(0),
+              _c("div", { staticClass: "d-flex justify-content-between" }, [
+                _vm._v("\n          Bills "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-base btn-sm",
+                    attrs: { type: "button", disabled: _vm.showmakebill },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("open-make-bill", _vm.startDate)
+                      }
+                    }
+                  },
+                  [_vm._v("+")]
+                )
+              ]),
               _vm._v(" "),
               _c("hr"),
               _vm._v(" "),
@@ -87565,24 +87839,373 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex justify-content-between" }, [
-      _vm._v("\n          Bills "),
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/bills/MakeBill.vue?vue&type=template&id=225590ba&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/bills/MakeBill.vue?vue&type=template&id=225590ba& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { attrs: { id: "make-bill" } },
+    [
       _c(
-        "button",
+        "b-alert",
         {
-          staticClass: "btn btn-outline-base btn-sm",
-          attrs: { type: "button" }
+          attrs: {
+            show: _vm.message.countDown,
+            dismissible: "",
+            variant: _vm.message.type,
+            fade: ""
+          },
+          on: {
+            dismissed: function($event) {
+              _vm.message.countDown = 0
+            },
+            "dismiss-count-down": _vm.countDownChanged
+          }
         },
-        [_vm._v("+")]
+        [_vm._v("\n    " + _vm._s(_vm.message.message) + "\n  ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "make-bill-modal",
+          attrs: {
+            id: "make-bill-modal",
+            title: "Make Bill",
+            centered: "",
+            "no-close-on-backdrop": ""
+          },
+          model: {
+            value: _vm.showModal,
+            callback: function($$v) {
+              _vm.showModal = $$v
+            },
+            expression: "showModal"
+          }
+        },
+        [
+          _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.onSave(_vm.bill)
+                }
+              }
+            },
+            [
+              _c("div", { staticClass: "form-group" }, [
+                _c("label", { attrs: { for: "name" } }, [_vm._v("Name: ")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.bill.name,
+                      expression: "bill.name"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  class: {
+                    "is-invalid":
+                      _vm.$v.bill.name.$invalid && !_vm.$v.bill.name.$pending,
+                    "is-valid":
+                      !_vm.$v.bill.name.$invalid && !_vm.$v.bill.name.$pending
+                  },
+                  attrs: { id: "name", type: "text", placeholder: "Name" },
+                  domProps: { value: _vm.bill.name },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.bill, "name", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                !_vm.$v.bill.name.required
+                  ? _c("div", { staticClass: "invalid-feedback" }, [
+                      _vm._v("\n          Name is required\n        ")
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col form-group" }, [
+                  _c("label", { attrs: { for: "amount" } }, [
+                    _vm._v("Amount: ")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.bill.amount,
+                        expression: "bill.amount"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: {
+                      "is-invalid":
+                        _vm.$v.bill.amount.$invalid &&
+                        !_vm.$v.bill.amount.$pending,
+                      "is-valid":
+                        !_vm.$v.bill.amount.$invalid &&
+                        !_vm.$v.bill.amount.$pending
+                    },
+                    attrs: {
+                      id: "amount",
+                      type: "text",
+                      placeholder: "Amount"
+                    },
+                    domProps: { value: _vm.bill.amount },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.bill, "amount", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  !_vm.$v.bill.amount.required
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v("\n            Amount is required\n          ")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.$v.bill.amount.numeric
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v(
+                          "\n            Amount must be a valid number\n          "
+                        )
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col form-group" }, [
+                  _c("label", { attrs: { for: "day_due_on" } }, [
+                    _vm._v("Day Due: ")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model.number",
+                        value: _vm.bill.day_due_on,
+                        expression: "bill.day_due_on",
+                        modifiers: { number: true }
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: {
+                      "is-invalid":
+                        _vm.$v.bill.day_due_on.$invalid &&
+                        !_vm.$v.bill.day_due_on.$pending,
+                      "is-valid":
+                        !_vm.$v.bill.day_due_on.$invalid &&
+                        !_vm.$v.bill.day_due_on.$pending
+                    },
+                    attrs: {
+                      id: "day_due_on",
+                      type: "number",
+                      placeholder: "Day Due"
+                    },
+                    domProps: { value: _vm.bill.day_due_on },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.bill,
+                          "day_due_on",
+                          _vm._n($event.target.value)
+                        )
+                      },
+                      blur: function($event) {
+                        return _vm.$forceUpdate()
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  !_vm.$v.bill.day_due_on.integer ||
+                  !_vm.$v.bill.day_due_on.minValue ||
+                  !_vm.$v.bill.day_due_on.maxValue
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v(
+                          "\n            Amount must be a valid integer day (1-31)\n          "
+                        )
+                      ])
+                    : _vm._e()
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col form-group" }, [
+                  _c("label", { attrs: { for: "start_on" } }, [
+                    _vm._v("Start On Date: ")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.bill.start_on,
+                        expression: "bill.start_on"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: {
+                      "is-invalid":
+                        _vm.$v.bill.start_on.$invalid &&
+                        !_vm.$v.bill.start_on.$pending,
+                      "is-valid":
+                        !_vm.$v.bill.start_on.$invalid &&
+                        !_vm.$v.bill.start_on.$pending
+                    },
+                    attrs: {
+                      id: "start_on",
+                      type: "date",
+                      placeholder: "mm/dd/yyyy"
+                    },
+                    domProps: { value: _vm.bill.start_on },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.bill, "start_on", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  !_vm.$v.bill.start_on.required
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v(
+                          "\n            Start On Date is required\n          "
+                        )
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col form-group" }, [
+                  _c("label", { attrs: { for: "end_on" } }, [
+                    _vm._v("End On Date: ")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.bill.end_on,
+                        expression: "bill.end_on"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: {
+                      "is-invalid":
+                        _vm.$v.bill.end_on.$invalid &&
+                        !_vm.$v.bill.end_on.$pending,
+                      "is-valid":
+                        !_vm.$v.bill.end_on.$invalid &&
+                        !_vm.$v.bill.end_on.$pending
+                    },
+                    attrs: {
+                      id: "end_on",
+                      type: "date",
+                      placeholder: "mm/dd/yyyy"
+                    },
+                    domProps: { value: _vm.bill.end_on },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.bill, "end_on", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  !_vm.$v.bill.end_on.required
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v(
+                          "\n            End On Date is required\n          "
+                        )
+                      ])
+                    : _vm._e()
+                ])
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "template",
+            { slot: "modal-footer" },
+            [
+              _c(
+                "b-button",
+                {
+                  attrs: { size: "sm", variant: "sub1" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("close")
+                    }
+                  }
+                },
+                [_vm._v("\n        Cancel\n      ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: { size: "sm", variant: "base" },
+                  on: {
+                    click: function($event) {
+                      return _vm.onSave(_vm.bill)
+                    }
+                  }
+                },
+                [_vm._v("\n        Save\n      ")]
+              )
+            ],
+            1
+          )
+        ],
+        2
       )
-    ])
-  }
-]
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -107582,6 +108205,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Month_vue_vue_type_template_id_f64549b6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Month_vue_vue_type_template_id_f64549b6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/bills/MakeBill.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/bills/MakeBill.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MakeBill_vue_vue_type_template_id_225590ba___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MakeBill.vue?vue&type=template&id=225590ba& */ "./resources/js/components/bills/MakeBill.vue?vue&type=template&id=225590ba&");
+/* harmony import */ var _MakeBill_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MakeBill.vue?vue&type=script&lang=js& */ "./resources/js/components/bills/MakeBill.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MakeBill_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MakeBill_vue_vue_type_template_id_225590ba___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MakeBill_vue_vue_type_template_id_225590ba___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/bills/MakeBill.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/bills/MakeBill.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/bills/MakeBill.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MakeBill_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./MakeBill.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/bills/MakeBill.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MakeBill_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/bills/MakeBill.vue?vue&type=template&id=225590ba&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/bills/MakeBill.vue?vue&type=template&id=225590ba& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MakeBill_vue_vue_type_template_id_225590ba___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./MakeBill.vue?vue&type=template&id=225590ba& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/bills/MakeBill.vue?vue&type=template&id=225590ba&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MakeBill_vue_vue_type_template_id_225590ba___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MakeBill_vue_vue_type_template_id_225590ba___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
