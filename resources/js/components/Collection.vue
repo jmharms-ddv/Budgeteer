@@ -148,6 +148,12 @@
         }
         return this.remove;
       },
+      onBillPairStart(id, event) {
+        this.$emit('bill-pair-start', id);
+      },
+      onPaycheckPairStart(id, event) {
+        this.$emit('paycheck-pair-start', id);
+      },
       capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
       }

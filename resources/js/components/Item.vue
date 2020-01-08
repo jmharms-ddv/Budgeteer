@@ -110,6 +110,14 @@
         default: false
       }
     },
+
+    created() {
+      EventBus.$on('bill-pair-start', obj => this.paycheck_highlight = true);
+      EventBus.$on('paycheck-pair-start', obj => this.bill_highlight = true);
+      EventBus.$on('bill-pair-end', obj => this.bill_highlight = false);
+      EventBus.$on('paycheck-pair-end', obj => this.paycheck_highlight = false);
+    },
+
     data() {
       return {
         paycheck_highlight: false,
@@ -118,6 +126,17 @@
     },
 
     methods: {
+      onPairEnd() {
+        if(this.type == 'bills' && this.bill_highlight) EventBus.$emit('bill-pair-end', this.value);
+        if(this.type == 'paychecks' && this.paycheck_highlight) EventBus.$emit('paycheck-pair-end', this.value);
+      },
+      onPairStart() {
+        if(this.type == 'bills') EventBus.$emit('bill-pair-start', this.value);
+        if(this.type == 'paychecks') EventBus.$emit('paycheck-pair-start', this.value);
+      }
+    },
+
+    computed: {
 
     }
   }

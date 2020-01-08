@@ -18,6 +18,7 @@
 
 <script>
   import Calendar from '../components/Calendar.vue';
+  import { EventBus } from '../event-bus.js';
   import moment from 'moment';
   export default {
     components: {
@@ -35,6 +36,13 @@
       this.$store.dispatch('loadBills', {
         with: ['paychecks']
       });
+      this.$store.dispatch('loadIncomes', {
+        with: ['paychecks.bills']
+      });
+      EventBus.$on('bill-pair-start', id => this.disableSelector = true);
+      EventBus.$on('paycheck-pair-start', id => this.disableSelector = true);
+      EventBus.$on('bill-pair-end', id => this.disableSelector = false);
+      EventBus.$on('paycheck-pair-end', id => this.disableSelector = false);
     },
 
     computed: {
