@@ -4,7 +4,7 @@
 
 <template>
   <div id="home" class="container-fluid">
-    <select class="custom-select custom-select-lg mb-3" v-model.number="incomesSelected">
+    <select :disabled="disableSelector" class="custom-select custom-select-lg mb-3" v-model.number="incomesSelected">
       <option value="0" selected>All Incomes</option>
       <option v-for="income in incomes" :key="income.id" :value="income.id">
         {{ income.name }}
@@ -26,14 +26,13 @@
 
     data() {
       return {
-        incomesSelected: 0
+        incomesSelected: 0,
+        disableSelector: false
       };
     },
 
     created() {
-      this.$store.dispatch('loadUser');
-      this.$store.dispatch('loadBills');
-      this.$store.dispatch('loadIncomes', {
+      this.$store.dispatch('loadBills', {
         with: ['paychecks']
       });
     },

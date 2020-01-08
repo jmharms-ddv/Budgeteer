@@ -3,13 +3,14 @@
     <div class="card-deck mb-4" v-for="row in rowsFull">
       <template v-for="col in deckSize">
         <item :value="items[(row - 1)*deckSize + col - 1]"
-              :from="from"
+              :type="type"
               :open="canOpen((row - 1)*deckSize + col - 1)"
               :remove="remove"
               :edit="edit"
               @open="openItem((row - 1)*deckSize + col - 1)"
               @delete="deleteItem((row - 1)*deckSize + col - 1)"
-              @edit="editItem((row - 1)*deckSize + col - 1)">
+              @edit="editItem((row - 1)*deckSize + col - 1)"
+              @pair="$emit('pair')">
           <template v-if="content" #default="slotProps">
             {{ slotProps.value[content] }}
           </template>
@@ -21,13 +22,15 @@
         <div class="card-deck mb-4">
           <template v-for="col in colsInPartialRow">
             <item :value="items[rowsFull*deckSize + col - 1]"
-                  :from="from"
+                  :type="type"
                   :open="canOpen(rowsFull*deckSize + col - 1)"
                   :remove="remove"
                   :edit="edit"
                   @open="openItem(rowsFull*deckSize + col - 1)"
                   @delete="deleteItem(rowsFull*deckSize + col - 1)"
-                  @edit="editItem(rowsFull*deckSize + col - 1)">
+                  @edit="editItem(rowsFull*deckSize + col - 1)"
+                  @bill-pair-start="onBillPairStart"
+                  @paycheck-pair-start="onPaycheckPairStart">
               <template v-if="content" #default="slotProps">
                 {{ slotProps.value[content] }}
               </template>
@@ -50,8 +53,9 @@
         type: Array,
         required: true
       },
-      from: {
-        type: String
+      type: {
+        type: String,
+        required: true
       },
       open: {
         type: Boolean,

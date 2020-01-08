@@ -2,7 +2,6 @@
   <div class="card mb-2 mt-2" :class="{ 'border-base': isSelected }" style="display: flex;">
     <div class="card-body">
       <h5 class="card-title">{{ monthsStr[month][0] }} {{ year }}</h5>
-
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
@@ -10,7 +9,10 @@
           </div>
           <hr>
           <collection :items="billsMonth"
-                      @open-item="itemSelected"></collection>
+                      type="bills"
+                      :size="1"
+                      @open-item="itemSelected"
+                      @bill-pair-start=""></collection>
         </div>
       </div>
       <div class="card">
@@ -20,7 +22,10 @@
           </div>
           <hr>
           <collection :items="paychecksMonth"
-                      @open-item="itemSelected"></collection>
+                      type="paychecks"
+                      :size="1"
+                      @open-item="itemSelected"
+                      @paycheck-pair-start=""></collection>
         </div>
       </div>
     </div>
@@ -100,8 +105,14 @@
         Gets the incomes
         */
       incomes() {
-        if(this.incomesshown == "*") return this.$store.getters.getIncomes;
-        return this.$store.getters.getIncomes.filter((income) => {
+        return this.$store.getters.getIncomes;
+      },
+      /**
+        Gets the incomes selected
+        */
+      incomesSelected() {
+        if(this.incomesshown == "0") return this.incomes;
+        return this.incomes.filter((income) => {
           return income.id == this.incomesshown;
         });
       },
@@ -110,9 +121,9 @@
         */
       paychecks() {
         let paycheckArr = [];
-        for(let i in this.incomes) {
-          for(let j in this.incomes[i].paychecks) {
-            paycheckArr.push(this.incomes[i].paychecks[j]);
+        for(let i in this.incomesSelected) {
+          for(let j in this.incomesSelected[i].paychecks) {
+            paycheckArr.push(this.incomesSelected[i].paychecks[j]);
           }
         }
         return paycheckArr;

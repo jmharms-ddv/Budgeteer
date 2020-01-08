@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="make-paycheck">
     <b-alert :show="message.countDown"
              dismissible
              :variant="message.type"
@@ -23,8 +23,8 @@
             </option>
           </select>
         </div>
-        <div class="form-group row">
-          <div class="col">
+        <div class="row">
+          <div class="col form-group">
             <label for="amount_project">Amount Projected: </label>
             <input class="form-control"
                     :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
@@ -37,7 +37,7 @@
               Amount projected must be a valid number
             </div>
           </div>
-          <div class="col">
+          <div class="col form-group">
             <label for="amount">Amount: </label>
             <input class="form-control"
                     :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
@@ -153,6 +153,7 @@
 
     methods: {
       onSave(paycheck) {
+        this.$store.dispatch('addPaycheck', paycheck);
         this.$emit('save', paycheck);
       }
     },
