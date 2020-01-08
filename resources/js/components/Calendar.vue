@@ -1,5 +1,9 @@
 <template>
   <div id="calendar">
+    <make-bill :show="showMakeBillForm"
+               :starton="starton"
+               @close="showMakeBillForm = false"
+               @save="onSaveBill"></make-bill>
     <make-paycheck :show="showMakePaycheckForm"
                     :income="incomes"
                     :paidon="paidon"
@@ -18,7 +22,9 @@
                 :month="month.months[index - 1][0]"
                 :year="month.months[index - 1][1]"
                 :incomesshown="incomes"
+                :showmakebill="showMakeBillForm"
                 :showmakepaycheck="showMakePaycheckForm"
+                @open-make-bill="onOpenMakeBill"
                 @open-make-paycheck="onOpenMakePaycheck">
           </month>
         </div>
@@ -45,6 +51,7 @@
 
 <script>
   import Month from './Month.vue';
+  import MakeBill from './bills/MakeBill.vue';
   import MakePaycheck from './paychecks/MakePaycheck.vue';
   import PairBillPaycheck from './paychecks/PairBillPaycheck.vue';
   import { cloneDeep } from 'lodash';
@@ -52,6 +59,7 @@
   export default {
     components: {
       Month,
+      'make-bill': MakeBill,
       'make-paycheck': MakePaycheck,
       'pair-bill-paycheck': PairBillPaycheck
     },
@@ -87,7 +95,9 @@
           months: []
         },
         nowMonth: [],
+        showMakeBillForm: false,
         showMakePaycheckForm: false,
+        starton: null,
         paidon: null
       };
     },
@@ -134,8 +144,17 @@
         this.month.months = newMonths;
       },
 
+      onSaveBill(bill, event) {
+        this.showMakeBillForm = false;
+      },
+
       onSavePaycheck(paycheck, event) {
         this.showMakePaycheckForm = false;
+      },
+
+      onOpenMakeBill(startDate, event) {
+        this.starton = startDate;
+        this.showMakeBillForm = true;
       },
 
       onOpenMakePaycheck(startDate, event) {

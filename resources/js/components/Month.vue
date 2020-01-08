@@ -5,7 +5,7 @@
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
-            Bills <button type="button" class="btn btn-outline-base btn-sm">+</button>
+            Bills <button type="button" :disabled="showmakebill" class="btn btn-outline-base btn-sm" @click="$emit('open-make-bill', startDate)">+</button>
           </div>
           <hr>
           <collection :items="billsMonth"
@@ -56,6 +56,10 @@
       },
       incomesshown: {
         type: Number,
+        required: true
+      },
+      showmakebill: {
+        type: Boolean,
         required: true
       },
       showmakepaycheck: {
@@ -153,7 +157,7 @@
         */
       billsMonth() {
         return this.bills.filter((bill) => {
-          return moment(this.startDate).isSameOrBefore(bill.end_at) && moment(this.endDate).isSameOrAfter(bill.start_at);
+          return moment(this.startDate).isSameOrBefore(bill.end_on) && moment(this.endDate).isSameOrAfter(bill.start_on);
         });
       }
     },
