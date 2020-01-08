@@ -14,7 +14,11 @@ class AddDueOnColumnBillsTable extends Migration
     public function up()
     {
         Schema::table('bills', function (Blueprint $table) {
-            $table->integer('day_due_on')->after('amount');
+            $table->dropColumn('end_at');
+            $table->dropColumn('start_at');
+            $table->date('end_on')->after('amount')->nullable();
+            $table->date('start_on')->after('amount')->nullable();
+            $table->integer('day_due_on')->after('amount')->nullable();
         });
     }
 
@@ -27,6 +31,10 @@ class AddDueOnColumnBillsTable extends Migration
     {
         Schema::table('bills', function (Blueprint $table) {
             $table->dropColumn('day_due_on');
+            $table->dropColumn('end_on');
+            $table->dropColumn('start_on');
+            $table->timestamp('end_at')->after('amount')->nullable();
+            $table->timestamp('start_at')->after('amount')->nullable();
         });
     }
 }

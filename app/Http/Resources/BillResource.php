@@ -36,8 +36,8 @@ class BillResource extends JsonResource
             'name' => $this->name,
             'amount' => $this->amount,
             'day_due_on' => $this->day_due_on,
-            'start_at' => $this->start_at,
-            'end_at' => $this->end_at,
+            'start_on' => $this->start_on,
+            'end_on' => $this->end_on,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

@@ -66,8 +66,8 @@ class BillsController extends Controller
             'name' => 'required|string',
             'amount' => 'digits_between:1,7',
             'day_due_on' => 'nullable|integer',
-            'start_at' => 'bail|required|date',
-            'end_at' => 'required|date|after:'.$request->input('start_at')
+            'start_on' => 'bail|required|date',
+            'end_on' => 'required|date|after:'.$request->input('start_on')
         ]);
         /* authorization */
         $this->authorize('create', Bill::class);
@@ -77,8 +77,8 @@ class BillsController extends Controller
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
         $bill->day_due_on = $request->input('day_due_on');
-        $bill->start_at = $request->input('start_at');
-        $bill->end_at = $request->input('end_at');
+        $bill->start_on = $request->input('start_on');
+        $bill->end_on = $request->input('end_on');
         /* save new Bill */
         if($bill->save()) {
             return new BillResource($bill);
@@ -100,8 +100,8 @@ class BillsController extends Controller
             'name' => 'nullable|string',
             'amount' => 'nullable|digits_between:1,7',
             'day_due_on' => 'nullable|integer',
-            'start_at' => 'nullable|date',
-            'end_at' => 'nullable|date|after:'.$request->input('start_at')
+            'start_on' => 'nullable|date',
+            'end_on' => 'nullable|date|after:'.$request->input('start_on')
         ]);
         /* find resource */
         $bill = Bill::findOrFail($request->input('id'));
@@ -111,8 +111,8 @@ class BillsController extends Controller
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
         $bill->day_due_on = $request->input('day_due_on');
-        $bill->start_at = $request->input('start_at');
-        $bill->end_at = $request->input('end_at');
+        $bill->start_on = $request->input('start_on');
+        $bill->end_on = $request->input('end_on');
 
         if($bill->save()) {
             return new BillResource($bill);
