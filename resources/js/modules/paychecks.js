@@ -15,14 +15,14 @@ export const paychecks = {
     paycheck: {},
     paycheckLoadStatus: 0,
 
-    addPaycheckStatus: 0
+    addPaycheckStatus: 0,
+    pairBillPaycheckStatus: 0
   },
 
   actions: {
     loadPaychecks({ commit }, data) {
       commit('setPaychecksLoadStatus', 1);
-      let options = data.with ? data.with : [];
-      PaycheckAPI.getPaychecks({ with: options })
+      PaycheckAPI.getPaychecks(data)
         .then(res => {
           commit('setPaychecks', res.data.data);
           commit('setPaychecksLoadStatus', 2);
@@ -54,12 +54,28 @@ export const paychecks = {
         .catch(err => {
           commit('setAddPaycheckStatus', 3);
         });
+    },
+    pairBillPaycheck({ commit, state, dispatch }, data) {
+      commit('setPairBillPaycheckStatus', 1);
+      PaycheckAPI.postBillPaycheck(data)
+        .then(res => {
+          commit('setPairBillPaycheckStatus', 2);
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
+          dispatch('loadBills', {
+            with: ['paychecks']
+          });
+        })
+        .catch(err => {
+          commit('setPairBillPaycheckStatus', 3);
+        });
     }
   },
 
   mutations: {
     setPaychecksLoadStatus(state, status) {
-      state.paychecksLoadStatus = statue;
+      state.paychecksLoadStatus = status;
     },
     setPaychecks(state, paychecks) {
       state.paychecks = paychecks;
@@ -72,6 +88,9 @@ export const paychecks = {
     },
     setAddPaycheckStatus(state, status) {
       state.addPaycheckStatus = status;
+    },
+    setPairBillPaycheckStatus(state, status) {
+      state.pairBillPaycheckStatus = status;
     }
   },
 
@@ -90,6 +109,9 @@ export const paychecks = {
     },
     getAddPaycheckState(state) {
       return state.addPaycheckStatus;
+    },
+    getPairBillPaycheckState(state) {
+      return state.pairBillPaycheckStatus;
     }
   }
 }

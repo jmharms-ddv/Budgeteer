@@ -10,21 +10,16 @@ export default {
         can contain with [array]
       @return Promise
   */
-  getPaychecks: function(options) {
-    let optionsStr = '';
-    if(options) {
-      optionsStr = '?';
-      if(options.hasOwnProperty('with') && options.with.length != 0) {
-        optionsStr += (optionsStr == '?' ? 'with=' + options.with[0] : '&with=' + options.with[0]);
-        for(let i in options.with) {
-          if(i == 0) continue;
-          optionsStr += ':' + options.with[i];
-        }
-      } else {
-        optionsStr = '';
+  getPaychecks: function(options = {}) {
+    let optionsStr = '?';
+    if(options.hasOwnProperty('with') && options.with.length != 0) {
+      optionsStr += (optionsStr == '?' ? 'with=' + options.with[0] : '&with=' + options.with[0]);
+      for(let i in options.with) {
+        if(i == 0) continue;
+        optionsStr += ':' + options.with[i];
       }
     }
-    return axios.get(BUDGETEER_CONFIG.API_URL + '/paycheck' + optionsStr);
+    return axios.get(BUDGETEER_CONFIG.API_URL + '/paycheck' + (optionsStr == '?' ? '' : optionsStr));
   },
   /*
     GET   /api/paycheck/{id}
@@ -43,5 +38,11 @@ export default {
       amount_project: data.amount_project,
       paid_on: data.paid_on
     });
+  },
+  /*
+    POST   /api/paycheck/pair
+  */
+  postBillPaycheck: function(data) {
+    return axios.post(BUDGETEER_CONFIG.API_URL + '/paycheck/pair', data);
   }
 }

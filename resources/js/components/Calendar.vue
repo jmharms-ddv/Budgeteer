@@ -5,6 +5,7 @@
                     :paidon="paidon"
                     @close="showMakePaycheckForm = false"
                     @save="onSavePaycheck"></make-paycheck>
+    <pair-bill-paycheck></pair-bill-paycheck>
     <div class="row">
       <div class="col-sm-1">
         <button type="button" class="btn btn-secondary btn-lg btn-block h-100 d-inline-block" @click="monthDown()">❮</button>
@@ -45,12 +46,14 @@
 <script>
   import Month from './Month.vue';
   import MakePaycheck from './paychecks/MakePaycheck.vue';
+  import PairBillPaycheck from './paychecks/PairBillPaycheck.vue';
   import { cloneDeep } from 'lodash';
   import moment from 'moment';
   export default {
     components: {
       Month,
-      'make-paycheck': MakePaycheck
+      'make-paycheck': MakePaycheck,
+      'pair-bill-paycheck': PairBillPaycheck
     },
 
     props: {
