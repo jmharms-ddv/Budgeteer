@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\User;
 use App\Paycheck;
+use App\Bill;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PaycheckPolicy
@@ -45,6 +46,19 @@ class PaycheckPolicy
     {
         $paycheck->load('income');
         return $paycheck->income->user_id == $user->id;
+    }
+
+    /**
+     * Determine whether the user can create bill-paychecks pairing
+     *
+     * @param  \App\User  $user
+     * @param  \App\Paycheck  $paycheck
+     * @param  \App\Bill  $bill
+     * @return mixed
+     */
+    public function pair(User $user, Paycheck $paycheck, Bill $bill)
+    {
+        return $paycheck->income->user_id == $user->id && $bill->user_id == $user->id;
     }
 
     /**
