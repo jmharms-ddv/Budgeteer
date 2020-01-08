@@ -106928,10 +106928,8 @@ __webpack_require__.r(__webpack_exports__);
   /*
       POST     /api/income
   */
-  postBill: function postBill(name) {
-    return axios.post(_config_js__WEBPACK_IMPORTED_MODULE_0__["BUDGETEER_CONFIG"].API_URL + '/bill', {
-      name: name
-    });
+  postBill: function postBill(data) {
+    return axios.post(_config_js__WEBPACK_IMPORTED_MODULE_0__["BUDGETEER_CONFIG"].API_URL + '/bill', data);
   }
 });
 
@@ -107900,9 +107898,11 @@ var bills = {
           state = _ref3.state,
           dispatch = _ref3.dispatch;
       commit('setAddBillStatus', 1);
-      _api_bill_js__WEBPACK_IMPORTED_MODULE_0__["default"].postBill(data.name).then(function (res) {
+      _api_bill_js__WEBPACK_IMPORTED_MODULE_0__["default"].postBill(data).then(function (res) {
         commit('setAddBillStatus', 2);
-        dispatch('loadBills');
+        dispatch('loadBills', {
+          "with": ['paychecks']
+        });
       })["catch"](function (err) {
         commit('setAddBillStatus', 3);
       });

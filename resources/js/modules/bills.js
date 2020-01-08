@@ -21,7 +21,7 @@ export const bills = {
   actions: {
     loadBills({ commit }, data) {
       commit('setBillsLoadStatus', 1);
-      
+
       BillAPI.getBills(data)
         .then(res => {
           commit('setBills', res.data.data);
@@ -49,10 +49,12 @@ export const bills = {
     addBill({ commit, state, dispatch }, data) {
       commit('setAddBillStatus', 1);
 
-      BillAPI.postBill(data.name)
+      BillAPI.postBill(data)
         .then(res => {
           commit('setAddBillStatus', 2);
-          dispatch('loadBills');
+          dispatch('loadBills', {
+            with: ['paychecks']
+          });
         })
         .catch(err => {
           commit('setAddBillStatus', 3);

@@ -39,9 +39,7 @@ export default {
   /*
       POST     /api/income
   */
-  postBill: function(name) {
-    return axios.post(BUDGETEER_CONFIG.API_URL + '/bill', {
-      name: name
-    });
+  postBill: function(data) {
+    return axios.post(BUDGETEER_CONFIG.API_URL + '/bill', data);
   }
 }
