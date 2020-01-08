@@ -21,6 +21,18 @@ class BillResource extends JsonResource
             'user_id' => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),
             'paychecks' => PaycheckResource::collection($this->whenLoaded('paychecks')),
+            'pivot_amount' => $this->whenPivotLoaded('bill_paycheck', function() {
+                return $this->pivot->amount;
+            }),
+            'pivot_amount_project' => $this->whenPivotLoaded('bill_paycheck', function() {
+                return $this->pivot->amount_project;
+            }),
+            'pivot_due_on' => $this->whenPivotLoaded('bill_paycheck', function() {
+                return $this->pivot->due_on;
+            }),
+            'pivot_paid_on' => $this->whenPivotLoaded('bill_paycheck', function() {
+                return $this->pivot->paid_on;
+            }),
             'name' => $this->name,
             'amount' => $this->amount,
             'start_at' => $this->start_at,
