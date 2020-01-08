@@ -65,6 +65,7 @@ class BillsController extends Controller
         $request->validate([
             'name' => 'required|string',
             'amount' => 'digits_between:1,7',
+            'day_due_on' => 'nullable|integer',
             'start_at' => 'bail|required|date',
             'end_at' => 'required|date|after:'.$request->input('start_at')
         ]);
@@ -75,6 +76,7 @@ class BillsController extends Controller
         $bill->user_id = $request->user()->id;
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
+        $bill->day_due_on = $request->input('day_due_on');
         $bill->start_at = $request->input('start_at');
         $bill->end_at = $request->input('end_at');
         /* save new Bill */
@@ -97,6 +99,7 @@ class BillsController extends Controller
             'user_id' => 'nullable|integer',
             'name' => 'nullable|string',
             'amount' => 'nullable|digits_between:1,7',
+            'day_due_on' => 'nullable|integer',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after:'.$request->input('start_at')
         ]);
@@ -107,6 +110,7 @@ class BillsController extends Controller
         /* update Bill */
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
+        $bill->day_due_on = $request->input('day_due_on');
         $bill->start_at = $request->input('start_at');
         $bill->end_at = $request->input('end_at');
 
