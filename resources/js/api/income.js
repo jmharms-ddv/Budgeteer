@@ -10,21 +10,16 @@ export default {
         can contain with [array]
       @return Promise
   */
-  getIncomes: function(options) {
-    let optionsStr = '';
-    if(options) {
-      optionsStr = '?';
-      if(options.hasOwnProperty('with') && options.with.length != 0) {
-        optionsStr += (optionsStr == '?' ? 'with=' + options.with[0] : '&with=' + options.with[0]);
-        for(let i in options.with) {
-          if(i == 0) continue;
-          optionsStr += ':' + options.with[i];
-        }
-      } else {
-        optionsStr = '';
+  getIncomes: function(options = {}) {
+    let optionsStr = '?';
+    if(options.hasOwnProperty('with') && options.with.length != 0) {
+      optionsStr += (optionsStr == '?' ? 'with=' + options.with[0] : '&with=' + options.with[0]);
+      for(let i in options.with) {
+        if(i == 0) continue;
+        optionsStr += ':' + options.with[i];
       }
     }
-    return axios.get(BUDGETEER_CONFIG.API_URL + '/income' + optionsStr);
+    return axios.get(BUDGETEER_CONFIG.API_URL + '/income' + (optionsStr == '?' ? '' : optionsStr));
   },
 
   /*

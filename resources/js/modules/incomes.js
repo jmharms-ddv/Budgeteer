@@ -21,8 +21,7 @@ export const incomes = {
   actions: {
     loadIncomes({ commit }, data) {
       commit('setIncomesLoadStatus', 1);
-      let options = data.with ? data.with : [];
-      IncomeAPI.getIncomes({ with: options })
+      IncomeAPI.getIncomes(data)
         .then(res => {
           commit('setIncomes', res.data.data);
           commit('setIncomesLoadStatus', 2);
@@ -52,7 +51,9 @@ export const incomes = {
       IncomeAPI.postIncome(data)
         .then(res => {
           commit('setAddIncomeStatus', 2);
-          dispatch('loadIncomes');
+          dispatch('loadIncomes', {
+            with: ['paychecks']
+          });
         })
         .catch(err => {
           commit('setAddIncomeStatus', 3);
@@ -64,19 +65,15 @@ export const incomes = {
     setIncomesLoadStatus(state, status) {
       state.incomesLoadStatus = status;
     },
-
     setIncomes(state, incomes) {
       state.incomes = incomes;
     },
-
     setIncomeLoadStatus(state, status) {
       state.incomeLoadStatus = status;
     },
-
     setIncome(state, income) {
       state.income = income;
     },
-
     setAddIncomeStatus(state, status) {
       state.addIncomeStatus = status;
     }
@@ -86,19 +83,15 @@ export const incomes = {
     getIncomesLoadStatus(state) {
       return state.incomesLoadStatus;
     },
-
     getIncomes(state) {
       return state.incomes;
     },
-
     getIncomeLoadStatus(state) {
       return state.incomeLoadStatus;
     },
-
     getIncome(state){
       return state.income;
     },
-
     getAddIncomeStatus(state) {
       return state.addIncomeStatus;
     }

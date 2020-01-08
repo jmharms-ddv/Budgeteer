@@ -26,8 +26,7 @@ export default {
         optionsStr += ':' + options.filter_date[i];
       }
     }
-    optionsStr = '?' ? '' : optionsStr;
-    return axios.get(BUDGETEER_CONFIG.API_URL + '/bill' + optionsStr);
+    return axios.get(BUDGETEER_CONFIG.API_URL + '/bill' + (optionsStr == '?' ? '' : optionsStr));
   },
 
   /*
