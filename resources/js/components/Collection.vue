@@ -4,13 +4,13 @@
       <template v-for="col in deckSize">
         <item :value="items[(row - 1)*deckSize + col - 1]"
               :type="type"
+              :month="month ? month : null"
               :open="canOpen((row - 1)*deckSize + col - 1)"
               :remove="remove"
               :edit="edit"
               @open="openItem((row - 1)*deckSize + col - 1)"
               @delete="deleteItem((row - 1)*deckSize + col - 1)"
-              @edit="editItem((row - 1)*deckSize + col - 1)"
-              @pair="$emit('pair')">
+              @edit="editItem((row - 1)*deckSize + col - 1)">
           <template v-if="content" #default="slotProps">
             {{ slotProps.value[content] }}
           </template>
@@ -23,14 +23,13 @@
           <template v-for="col in colsInPartialRow">
             <item :value="items[rowsFull*deckSize + col - 1]"
                   :type="type"
+                  :month="month ? month : null"
                   :open="canOpen(rowsFull*deckSize + col - 1)"
                   :remove="remove"
                   :edit="edit"
                   @open="openItem(rowsFull*deckSize + col - 1)"
                   @delete="deleteItem(rowsFull*deckSize + col - 1)"
-                  @edit="editItem(rowsFull*deckSize + col - 1)"
-                  @bill-pair-start="onBillPairStart"
-                  @paycheck-pair-start="onPaycheckPairStart">
+                  @edit="editItem(rowsFull*deckSize + col - 1)">
               <template v-if="content" #default="slotProps">
                 {{ slotProps.value[content] }}
               </template>
@@ -56,6 +55,10 @@
       type: {
         type: String,
         required: true
+      },
+      month: {
+        type: Array,
+        required: false
       },
       open: {
         type: Boolean,
@@ -147,12 +150,6 @@
           }
         }
         return this.remove;
-      },
-      onBillPairStart(id, event) {
-        this.$emit('bill-pair-start', id);
-      },
-      onPaycheckPairStart(id, event) {
-        this.$emit('paycheck-pair-start', id);
       },
       capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);

@@ -19,7 +19,7 @@
           <month v-for="index in month.months.length"
                 :key="index - 1"
                 :is-selected="index - 1 == selectedMonth"
-                :month="month.months[index - 1][0]"
+                :month="month.months[index - 1][0]+1"
                 :year="month.months[index - 1][1]"
                 :incomesshown="incomes"
                 :showmakebill="showMakeBillForm"

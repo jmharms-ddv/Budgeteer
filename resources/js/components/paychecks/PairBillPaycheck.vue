@@ -12,7 +12,7 @@
             fade
             v-model="showPairAlert"
             variant="success"
-            @dismissed="onDismiss()">
+            @dismissed="onDismissAlert()">
       Select a {{ type == "paycheck" ? "bill" : "paycheck" }} to pair with this {{ type }}
     </b-alert>
     <b-modal v-model="showModal"
@@ -94,23 +94,33 @@
         this.type = "paycheck";
         this.showPairAlert = true;
       });
-      EventBus.$on('bill-pair-start', obj => {
+      EventBus.$on('bill-pair-start', arr => {
         this.type = "bill";
-        this.bill = obj;
-        this.pair.bill_id = obj.id;
+        this.bill = arr[0];
+        this.month = arr[1];
+        this.pair.bill_id = this.bill.id;
         this.showPairAlert = true;
       });
       EventBus.$on('paycheck-pair-end', obj => {
         if(obj != null) {
           this.paycheck = obj;
           this.pair.paycheck_id = obj.id;
+          this.amount = "" + this.bill.amount;
+          this.pair.due_on = "" + this.month[1] + "-" +
+                            (this.month[0] > 9 ? this.month[0] : "0" + this.month[0]) + "-" +
+                            (this.bill.day_due_on > 9 ? this.bill.day_due_on : "0" + this.bill.day_due_on);
           this.showPairAlert = false;
         }
       });
-      EventBus.$on('bill-pair-end', obj => {
-        if(obj != null) {
-          this.bill = obj;
-          this.pair.bill_id = obj.id;
+      EventBus.$on('bill-pair-end', arr => {
+        if(arr != null) {
+          this.bill = arr[0];
+          this.month = arr[1];
+          this.pair.bill_id = this.bill.id;
+          this.amount = "" + this.bill.amount;
+          this.pair.due_on = "" + this.month[1] + "-" +
+                            (this.month[0] > 9 ? this.month[0] : "0" + this.month[0]) + "-"+
+                            (this.bill.day_due_on > 9 ? this.bill.day_due_on : "0" + this.bill.day_due_on);
           this.showPairAlert = false;
         }
       });
@@ -125,6 +135,7 @@
         paycheck: null,
         projected: false,
         amount: "",
+        month: [],
         pair: {
           bill_id: null,
           paycheck_id: null,
@@ -137,15 +148,27 @@
     },
 
     methods: {
-      onDismiss() {
+      hasNoRelationship(bill, paycheck) {
+        for(let i in bill.paychecks) {
+          if(bill.paychecks[i].id == paycheck.id) {
+            return false;
+          }
+        }
+        return true;
+      },
+
+      onDismissAlert() {
         if(this.paycheck == null) {
           this.onHideModal();
           EventBus.$emit('paycheck-pair-end', null);
         } else if (this.bill == null) {
           this.onHideModal();
           EventBus.$emit('bill-pair-end', null);
-        } else {
+        } else if(this.hasNoRelationship(this.bill, this.paycheck)) {
           this.showModal = true;
+        } else {
+          this.showAlert('warning', "The bill and paycheck selected are already paired.");
+          this.onHideModal();
         }
       },
 
@@ -158,6 +181,7 @@
         this.$store.dispatch('pairBillPaycheck', this.pair);
         this.showModal = false;
       },
+
       onHideModal() {
         this.bill = null;
         this.paycheck = null;
@@ -168,6 +192,7 @@
         this.pair.due_on = "";
         this.pair.paid_on = "";
       },
+
       onClose() {
         this.showModal = false;
       }

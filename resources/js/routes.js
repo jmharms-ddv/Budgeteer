@@ -62,10 +62,10 @@ function requireAuth(to, from, next) {
 export default new VueRouter({
     routes: [
         {
-            path: '/home',
-            name: 'home',
-            component: Vue.component('Home', require('./pages/Home.vue').default),
-            beforeEnter: requireAuth
+          path: '/home',
+          name: 'home',
+          component: Vue.component('Home', require('./pages/Home.vue').default),
+          beforeEnter: requireAuth
         },
         {
           path: '/',
@@ -73,10 +73,10 @@ export default new VueRouter({
           component: Vue.component('Visitor', require('./pages/Vistor.vue').default)
         },
         {
-            path: '/incomes',
-            name: 'incomes',
-            component: Vue.component('Incomes', require('./pages/incomes/Incomes.vue').default),
-            beforeEnter: requireAuth
+          path: '/incomes',
+          name: 'incomes',
+          component: Vue.component('Incomes', require('./pages/incomes/Incomes.vue').default),
+          beforeEnter: requireAuth
         },
         {
           path: '/incomes/new',
@@ -91,10 +91,10 @@ export default new VueRouter({
           beforeEnter: requireAuth
         },
         {
-            path: '/bills',
-            name: 'bills',
-            component: Vue.component('Bills', require('./pages/bills/Bills.vue').default),
-            beforeEnter: requireAuth
+          path: '/bills',
+          name: 'bills',
+          component: Vue.component('Bills', require('./pages/bills/Bills.vue').default),
+          beforeEnter: requireAuth
         },
         {
           path: '/bills/new',
@@ -109,10 +109,10 @@ export default new VueRouter({
           beforeEnter: requireAuth
         },
         {
-            path: '/paychecks',
-            name: 'paychecks',
-            component: Vue.component('Paychecks', require('./pages/paychecks/Paychecks.vue').default),
-            beforeEnter: requireAuth
+          path: '/paychecks',
+          name: 'paychecks',
+          component: Vue.component('Paychecks', require('./pages/paychecks/Paychecks.vue').default),
+          beforeEnter: requireAuth
         },
         {
           path: '/paychecks/new',

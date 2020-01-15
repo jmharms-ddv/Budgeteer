@@ -49,7 +49,9 @@ export const paychecks = {
       PaycheckAPI.postPaycheck(data)
         .then(res => {
           commit('setAddPaycheckStatus', 2);
-          dispatch('loadPaychecks');
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
         })
         .catch(err => {
           commit('setAddPaycheckStatus', 3);

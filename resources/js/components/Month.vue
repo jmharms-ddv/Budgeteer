@@ -1,7 +1,7 @@
 <template>
   <div class="card mb-2 mt-2" :class="{ 'border-base': isSelected }" style="display: flex;">
     <div class="card-body">
-      <h5 class="card-title">{{ monthsStr[month][0] }} {{ year }}</h5>
+      <h5 class="card-title">{{ monthsStr[(month - 1)][0] }} {{ year }}</h5>
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
@@ -10,6 +10,7 @@
           <hr>
           <collection :items="billsMonth"
                       type="bills"
+                      :month="[month, year]"
                       :size="1"
                       @open-item="itemSelected"
                       @bill-pair-start=""></collection>
@@ -97,13 +98,13 @@
         Date of the first day of the month
         */
       startDate() {
-        return moment([this.year, this.month, 1]).format("YYYY-MM-DD");
+        return moment([this.year, this.month-1, 1]).format("YYYY-MM-DD");
       },
       /**
         Date of the last day of the month
         */
       endDate() {
-        return moment([this.year, this.month, this.monthsStr[this.month][1]]).format("YYYY-MM-DD");
+        return moment([this.year, this.month-1 , this.monthsStr[this.month - 1][1]]).format("YYYY-MM-DD");
       },
       /**
         Gets the incomes
