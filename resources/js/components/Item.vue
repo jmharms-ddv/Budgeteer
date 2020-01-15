@@ -1,77 +1,23 @@
 <template>
   <div class="card"
-       :class="{'border-base': !paycheck_highlight && !bill_highlight,
-                'border-success': (paycheck_highlight && type == 'paychecks') || (bill_highlight && type == 'bills')}">
-    <a @click="onPairEnd()">
-      <slot name="default" :value="value">
-        <div v-if="type === 'bills'">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <h5 class="card-title">
-                {{ value.name }}
-              </h5>
-              <h5 v-if="value.pivot_amount || value.pivot_amount_project" class="card-title">
-                ${{ (value.pivot_amount == null ? value.pivot_amount_project : value.pivot_amount) }}
-              </h5>
-              <h5 v-else class="card-title">
-                ${{ value.amount }}
-              </h5>
-            </div>
-            <div class="d-flex justify-content-between">
-              <p class="card-text">
-                
-              </p>
-              <p class="card-text">
-
-              </p>
-            </div>
-          </div>
-        </div>
-        <div v-else-if="type === 'paychecks'">
-          <div class="card-body">
-            <div class="row">
-              <div class="col">
-                Amount:
-              </div>
-              <div class="col">
-                {{ value.amount }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                Projected:
-              </div>
-              <div class="col">
-                {{ value.amount_project }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                Left Over:
-              </div>
-              <div class="col">
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else>
-          <div class="card-body">
-            Other
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <router-link v-if="edit" class="btn btn-outline-sub1 btn-sm" @click="$emit('edit')">Edit</router-link>
-            <router-link v-if="remove" class="btn btn-outline-sub2 btn-sm" @click="$emit('delete')">Delete</router-link>
-            <button type="button"
-                    class="elips btn btn-outline-base btn-sm"
-                    :disabled="(type == 'bills' && bill_highlight) || (type == 'paychecks' && paycheck_highlight)"
-                    @click="onPairStart()"></button>
-          </div>
-        </div>
-      </slot>
-    </a>
+       id="item"
+       :class="{ 'border-base': !bill_highlight && !paycheck_highlight,
+                 'border-success': (type === 'bills' && bill_highlight) || (type === 'paychecks' && paycheck_highlight) }">
+    <item-bill v-if="type === 'bills'"
+               :value="value"
+               :month="month"
+               :highlight="bill_highlight"
+               :open="open"
+               :remove="remove"
+               :edit="edit"
+               @bill-highlight="onBillHighlight"></item-bill>
+     <item-paycheck v-if="type === 'paychecks'"
+                    :highlight="paycheck_highlight"
+                    :value="value"
+                    :open="open"
+                    :remove="remove"
+                    :edit="edit"
+                    @paycheck-highlight="onPaycheckHighlight"></item-paycheck>
   </div>
 </template>
 
@@ -87,7 +33,14 @@
 
 <script>
   import { EventBus } from '../event-bus.js';
+  import ItemBill from './ItemBill.vue';
+  import ItemPaycheck from './ItemPaycheck.vue';
   export default {
+    components: {
+      'item-bill': ItemBill,
+      'item-paycheck': ItemPaycheck
+    },
+
     props: {
       value: {
         type: Object,
@@ -96,6 +49,10 @@
       type: {
         type: String,
         required: true
+      },
+      month: {
+        type: Array,
+        required: false
       },
       open: {
         type: Boolean,
@@ -111,33 +68,20 @@
       }
     },
 
-    created() {
-      EventBus.$on('bill-pair-start', obj => this.paycheck_highlight = true);
-      EventBus.$on('paycheck-pair-start', obj => this.bill_highlight = true);
-      EventBus.$on('bill-pair-end', obj => this.bill_highlight = false);
-      EventBus.$on('paycheck-pair-end', obj => this.paycheck_highlight = false);
-    },
-
     data() {
       return {
-        paycheck_highlight: false,
-        bill_highlight: false
+        bill_highlight: false,
+        paycheck_highlight: false
       };
     },
 
     methods: {
-      onPairEnd() {
-        if(this.type == 'bills' && this.bill_highlight) EventBus.$emit('bill-pair-end', this.value);
-        if(this.type == 'paychecks' && this.paycheck_highlight) EventBus.$emit('paycheck-pair-end', this.value);
+      onBillHighlight(value, event) {
+        this.bill_highlight = value;
       },
-      onPairStart() {
-        if(this.type == 'bills') EventBus.$emit('bill-pair-start', this.value);
-        if(this.type == 'paychecks') EventBus.$emit('paycheck-pair-start', this.value);
+      onPaycheckHighlight(value, event) {
+        this.paycheck_highlight = value;
       }
-    },
-
-    computed: {
-
     }
   }
 </script>
