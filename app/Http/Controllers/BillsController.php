@@ -64,16 +64,16 @@ class BillsController extends Controller
         /* validation */
         $request->validate([
             'name' => 'required|string',
-            'amount' => 'digits_between:1,7',
-            'day_due_on' => 'nullable|integer',
+            'amount' => 'required|numeric|between:0.01,99999.99',
+            'day_due_on' => 'nullable|integer|between:1,31',
             'start_on' => 'bail|required|date',
             'end_on' => 'required|date|after:'.$request->input('start_on')
         ]);
         /* authorization */
-        $this->authorize('create', Bill::class);
-        /* create new Bill */
         $bill = new Bill;
         $bill->user_id = $request->user()->id;
+        $this->authorize('create', $bill);
+        /* create new Bill */
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
         $bill->day_due_on = $request->input('day_due_on');

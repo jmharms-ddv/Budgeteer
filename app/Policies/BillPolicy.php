@@ -39,9 +39,9 @@ class BillPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Bill $bill)
     {
-        return true;
+        return $user->id == $bill->user_id;
     }
 
     /**
