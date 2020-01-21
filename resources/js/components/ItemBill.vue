@@ -84,6 +84,11 @@
     created() {
       EventBus.$on('paycheck-pair-start', obj => this.$emit('bill-highlight', true));
       EventBus.$on('bill-pair-end', arr => this.$emit('bill-highlight', false));
+      EventBus.$on('bill-selected', arr => {
+        if(this.value.id == arr[0] && this.paycheck.id == arr[1]) {
+          this.$emit('bill-highlight', true);
+        }
+      });
     },
 
     data() {

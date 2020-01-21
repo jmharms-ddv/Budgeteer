@@ -25,19 +25,21 @@
         </div>
         <div class="row">
           <div class="col form-group">
-            <label for="amount">Amount: </label>
-            <input class="form-control"
-                    :class="{ 'is-invalid': $v.bill.amount.$invalid && !$v.bill.amount.$pending,
-                              'is-valid': !$v.bill.amount.$invalid && !$v.bill.amount.$pending }"
-                    id="amount"
-                    type="text"
-                    placeholder="Amount"
-                    v-model="bill.amount">
+            <label class="sr-only" for="amount">Amount</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">$</div>
+              </div>
+              <input class="form-control"
+                      :class="{ 'is-invalid': $v.bill.amount.$invalid && !$v.bill.amount.$pending,
+                                'is-valid': !$v.bill.amount.$invalid && !$v.bill.amount.$pending }"
+                      id="amount"
+                      type="text"
+                      placeholder="Amount"
+                      v-model="bill.amount">
+            </div>
             <div v-if="!$v.bill.amount.required" class="invalid-feedback">
               Amount is required
-            </div>
-            <div v-if="!$v.bill.amount.numeric" class="invalid-feedback">
-              Amount must be a valid number
             </div>
           </div>
           <div class="col form-group">
@@ -97,7 +99,7 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
-  import { required, minValue, maxValue, numeric, integer } from 'vuelidate/lib/validators';
+  import { required, minValue, maxValue, integer } from 'vuelidate/lib/validators';
   import Alert from '../../api/alert.js';
   export default {
     components: {
@@ -136,8 +138,7 @@
           required
         },
         amount: {
-          required,
-          numeric
+          required
         },
         day_due_on: {
           integer,

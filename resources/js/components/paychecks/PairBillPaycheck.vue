@@ -37,12 +37,12 @@
             </p>
           </div>
           <div class="col form-group">
-            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+            <label class="sr-only" for="amount">Amount</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <div class="input-group-text">$</div>
               </div>
-              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Amount" v-model="amount">
+              <input type="text" class="form-control" id="amount" placeholder="Amount" v-model="amount">
             </div>
             <div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" id="projected" v-model="projected">

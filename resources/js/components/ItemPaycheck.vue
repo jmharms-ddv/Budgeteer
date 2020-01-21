@@ -7,7 +7,14 @@
             <h5>${{ value.amount == null ? value.amount_project : value.amount }}</h5>
           </div>
           <div class="d-flex justify-content-between mb-2">
-            <button type="button" class="btn btn-outline-base btn-sm">Bills</button>
+            <div class="btn-group dropright">
+              <button type="button" class="btn btn-outline-base btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Bills
+              </button>
+              <div class="dropdown-menu">
+                <a v-for="bill in value.bills" :key="bill.id" class="dropdown-item" @click.prevent="EventBus.$emit('bill-selected', [bill.id, value.id])">{{ bill.name }} Due on: {{ bill.pivot_due_on }}</a>
+              </div>
+            </div>
             <h5>${{ leftOver }}</h5>
           </div>
           <div class="d-flex justify-content-between">

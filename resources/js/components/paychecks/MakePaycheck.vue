@@ -33,8 +33,8 @@
                     type="text"
                     placeholder="Amount Projected"
                     v-model="paycheck.amount_project">
-            <div v-if="!$v.paycheck.amount_project.numeric" class="invalid-feedback">
-              Amount projected must be a valid number
+            <div v-if="!$v.paycheck.amount_project.required" class="invalid-feedback">
+              Amount is required
             </div>
           </div>
           <div class="col form-group">
@@ -46,8 +46,8 @@
                     type="text"
                     placeholder="Amount"
                     v-model="paycheck.amount">
-            <div v-if="!$v.paycheck.amount_project.numeric" class="invalid-feedback">
-              Amount must be a valid number
+            <div v-if="!$v.paycheck.amount.required" class="invalid-feedback">
+              Amount is required
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
-  import { required, minValue, numeric } from 'vuelidate/lib/validators';
+  import { required, requiredIf, minValue, numeric } from 'vuelidate/lib/validators';
   import Alert from '../../api/alert.js';
   export default {
     components: {
@@ -122,10 +122,14 @@
           minValue: minValue(1)
         },
         amount_project: {
-          numeric
+          required: requiredIf(function() {
+            return !this.paycheck.amount;
+          })
         },
         amount: {
-          numeric
+          required: requiredIf(function() {
+            return !this.paycheck.amount_project;
+          })
         },
         paid_on: {
           required
