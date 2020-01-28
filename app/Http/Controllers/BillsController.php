@@ -28,12 +28,12 @@ class BillsController extends Controller
      */
     public function index(Request $request)
     {
+        /* authorization */
         $this->authorize('index', Bill::class);
-
+        /* extract options */
         $optionsArr = $this->extractOptions($request);
-
+        /* fetch models with options */
         $bills = Bill::where('user_id', $request->user()->id)->with($optionsArr['with'])->get();
-
         if(!empty($optionsArr['filter_date'])) {
             $filter_dateArr = $optionsArr['filter_date'];
             $bills = $bills->filter(function($model, $key) use ($filter_dateArr) {
@@ -49,7 +49,7 @@ class BillsController extends Controller
                 return true;
             });
         }
-
+        /* return resource collection */
         return BillResource::collection($bills);
     }
 
@@ -73,14 +73,15 @@ class BillsController extends Controller
         $bill = new Bill;
         $bill->user_id = $request->user()->id;
         $this->authorize('create', $bill);
-        /* create new Bill */
+        /* create new model from request */
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
         $bill->day_due_on = $request->input('day_due_on');
         $bill->start_on = $request->input('start_on');
         $bill->end_on = $request->input('end_on');
-        /* save new Bill */
+        /* save new model */
         if($bill->save()) {
+            /* return resource */
             return new BillResource($bill);
         }
     }
@@ -98,23 +99,24 @@ class BillsController extends Controller
             'id' => 'required|integer',
             'user_id' => 'nullable|integer',
             'name' => 'nullable|string',
-            'amount' => 'nullable|digits_between:1,7',
+            'amount' => 'nullable|numeric|between:0.01,99999.99',
             'day_due_on' => 'nullable|integer',
-            'start_on' => 'nullable|date',
-            'end_on' => 'nullable|date|after:'.$request->input('start_on')
+            'start_on' => 'required|date',
+            'end_on' => 'required|date|after:'.$request->input('start_on')
         ]);
         /* find resource */
         $bill = Bill::findOrFail($request->input('id'));
         /* authorization */
         $this->authorize('update', $bill);
-        /* update Bill */
+        /* update model from request */
         $bill->name = $request->input('name');
         $bill->amount = $request->input('amount');
         $bill->day_due_on = $request->input('day_due_on');
         $bill->start_on = $request->input('start_on');
         $bill->end_on = $request->input('end_on');
-
+        /* save model */
         if($bill->save()) {
+            /* return resource */
             return new BillResource($bill);
         }
     }
@@ -127,10 +129,11 @@ class BillsController extends Controller
      */
     public function show($id)
     {
+        /* find resource */
         $bill = Bill::findOrFail($id);
-
+        /* authorization */
         $this->authorize('view', $bill);
-
+        /* return resource */
         return new BillResource($bill);
     }
 
@@ -142,11 +145,13 @@ class BillsController extends Controller
      */
     public function destroy($id)
     {
+        /* find resource */
         $bill = Bill::findOrFail($id);
-
+        /* authorization */
         $this->authorize('delete', $bill);
-
+        /* delete model */
         if($bill->delete()) {
+            /* return resource */
             return new BillResource($bill);
         }
     }

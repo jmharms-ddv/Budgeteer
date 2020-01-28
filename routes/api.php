@@ -29,8 +29,11 @@ Route::delete('bill/{bill}', ['as' => 'bill.destroy', 'uses' => 'BillsController
 Route::get('paycheck', ['as' => 'paycheck.index', 'uses' => 'PaychecksController@index']);
 Route::get('paycheck/{paycheck}', ['as' => 'paycheck.show', 'uses' => 'PaychecksController@show']);
 Route::post('paycheck', ['as' => 'paycheck.store', 'uses' => 'PaychecksController@store']);
-Route::post('paycheck/pair', ['as' => 'paycheck.pair', 'uses' => 'PaychecksController@pair']);
 Route::put('paycheck', ['as' => 'paycheck.update', 'uses' => 'PaychecksController@update']);
 Route::delete('paycheck/{paycheck}', ['as' => 'paycheck.destroy', 'uses' => 'PaychecksController@destroy']);
+
+Route::post('billpaycheck', ['as' => 'billpaycheck.store', 'uses' => 'BillPaycheckController@store']);
+Route::put('billpaycheck', ['as' => 'billpaycheck.update', 'uses' => 'BillPaycheckController@update']);
+Route::delete('billpaycheck/{bill}/{paycheck}', ['as' => 'billpaycheck.destroy', 'uses' => 'BillPaycheckController@destroy']);
 
 Route::get('user', ['as' => 'user.loggedin', 'uses' => 'UsersController@loggedin']);

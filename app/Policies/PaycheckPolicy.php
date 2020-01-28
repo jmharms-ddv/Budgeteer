@@ -49,19 +49,6 @@ class PaycheckPolicy
     }
 
     /**
-     * Determine whether the user can create bill-paychecks pairing
-     *
-     * @param  \App\User  $user
-     * @param  \App\Paycheck  $paycheck
-     * @param  \App\Bill  $bill
-     * @return mixed
-     */
-    public function pair(User $user, Paycheck $paycheck, Bill $bill)
-    {
-        return $paycheck->income->user_id == $user->id && $bill->user_id == $user->id;
-    }
-
-    /**
      * Determine whether the user can update the paycheck.
      *
      * @param  \App\User  $user
@@ -109,5 +96,49 @@ class PaycheckPolicy
     public function forceDelete(User $user, Paycheck $paycheck)
     {
         //
+    }
+
+    /**
+     * The following methods are for Bill-Paycheck association management
+     */
+
+    /**
+     * Determine whether the user can create the bill-paycheck association
+     *
+     * @param  \App\User  $user
+     * @param  \App\Paycheck  $paycheck
+     * @param  \App\Bill  $bill
+     * @return mixed
+     */
+    public function attachBill(User $user, Paycheck $paycheck, Bill $bill)
+    {
+        return $paycheck->income->user_id == $user->id && $bill->user_id == $user->id;
+    }
+
+    /**
+     * Determine whether the user can update the bill-paycheck association
+     *
+     * @param  \App\User  $user
+     * @param  \App\Paycheck  $paycheck
+     * @param  \App\Bill  $bill
+     * @return mixed
+     */
+
+    public function updatePivotBill(User $user, Paycheck $paycheck, Bill $bill)
+    {
+        return $paycheck->income->user_id == $user->id && $bill->user_id == $user->id;
+    }
+
+    /**
+     * Determine whether the user can delete the bill-paycheck association
+     *
+     * @param  \App\User  $user
+     * @param  \App\Paycheck  $paycheck
+     * @param  \App\Bill  $bill
+     * @return mixed
+     */
+    public function detachBill(User $user, Paycheck $paycheck, Bill $bill)
+    {
+        return $paycheck->income->user_id == $user->id && $bill->user_id == $user->id;
     }
 }

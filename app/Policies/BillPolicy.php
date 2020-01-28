@@ -91,4 +91,48 @@ class BillPolicy
     {
         //
     }
+
+    /**
+     * The following methods are for Bill-Paycheck association management
+     */
+
+    /**
+     * Determine whether the user can create bill-paycheck association
+     *
+     * @param  \App\User  $user
+     * @param  \App\Bill  $bill
+     * @param  \App\Paycheck  $paycheck
+     * @return mixed
+     */
+    public function attachPaycheck(User $user, Bill $bill, Paycheck $paycheck)
+    {
+        return $bill->user_id == $user->id && $paycheck->income->user_id == $user->id;
+    }
+
+    /**
+     * Determine whether the user can update bill-paycheck association
+     *
+     * @param  \App\User  $user
+     * @param  \App\Bill  $bill
+     * @param  \App\Paycheck  $paycheck
+     * @return mixed
+     */
+
+    public function updatePivotPaycheck(User $user, Bill $bill, Paycheck $paycheck)
+    {
+        return $bill->user_id == $user->id && $paycheck->income->user_id == $user->id;
+    }
+
+    /**
+     * Determine whether the user can delete the bill-paycheck association
+     *
+     * @param  \App\User  $user
+     * @param  \App\Bill  $bill
+     * @param  \App\Paycheck  $paycheck
+     * @return mixed
+     */
+    public function detachPaycheck(User $user, Bill $bill, Paycheck $paycheck)
+    {
+        return $bill->user_id == $user->id && $paycheck->income->user_id == $user->id;
+    }
 }
