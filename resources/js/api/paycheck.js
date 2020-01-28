@@ -24,12 +24,15 @@ export default {
   /*
     GET   /api/paycheck/{id}
     @param id int
+    @return Promise
   */
   getPaycheck: function(id) {
     return axios.get(BUDGETEER_CONFIG.API_URL + '/paycheck/' + id);
   },
   /*
     POST   /api/paycheck
+    @param data object
+    @return Promise
   */
   postPaycheck: function(data) {
     return axios.post(BUDGETEER_CONFIG.API_URL + '/paycheck', {
@@ -40,9 +43,27 @@ export default {
     });
   },
   /*
-    POST   /api/paycheck/pair
+    POST   /api/billpaycheck
+    @param data object
+    @return Promise
   */
   postBillPaycheck: function(data) {
-    return axios.post(BUDGETEER_CONFIG.API_URL + '/paycheck/pair', data);
+    return axios.post(BUDGETEER_CONFIG.API_URL + '/billpaycheck', data);
+  },
+  /*
+    PUT   /api/billpaycheck
+    @param data object
+    @return Promise
+  */
+  putBillPaycheck: function(data) {
+    return axios.put(BUDGETEER_CONFIG.API_URL + '/billpaycheck', data);
+  },
+  /*
+    DELETE   /api/billpaycheck/{billId}/{paycheckId}
+    @param data object
+    @return Promise
+  */
+  deleteBillPaycheck: function(data) {
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/billpaycheck/' + data.bill_id + '/' + data.paycheck_id);
   }
 }

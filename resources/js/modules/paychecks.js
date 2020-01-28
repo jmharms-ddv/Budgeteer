@@ -16,7 +16,9 @@ export const paychecks = {
     paycheckLoadStatus: 0,
 
     addPaycheckStatus: 0,
-    pairBillPaycheckStatus: 0
+    pairBillPaycheckStatus: 0,
+    updateBillPaycheckStatus: 0,
+    deleteBillPaycheckStatus: 0
   },
 
   actions: {
@@ -72,6 +74,38 @@ export const paychecks = {
         .catch(err => {
           commit('setPairBillPaycheckStatus', 3);
         });
+    },
+    updateBillPaycheck({ commit, state, dispatch }, data) {
+      commit('setUpdateBillPaycheckStatus', 1);
+      PaycheckAPI.putBillPaycheck(data)
+        .then(res => {
+          commit('setUpdateBillPaycheckStatus', 2);
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
+          dispatch('loadBills', {
+            with: ['paychecks']
+          });
+        })
+        .catch(err => {
+          commit('setUpdateBillPaycheckStatus', 3);
+        });
+    },
+    deleteBillPaycheck({ commit, state, dispatch }, data) {
+      commit('setDeleteBillPaycheckStatus', 1);
+      PaycheckAPI.deleteBillPaycheck(data)
+        .then(res => {
+          commit('setDeleteBillPaycheckStatus', 2);
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
+          dispatch('loadBills', {
+            with: ['paychecks']
+          });
+        })
+        .catch(err => {
+          commit('setDeleteBillPaycheckStatus', 3);
+        });
     }
   },
 
@@ -93,6 +127,12 @@ export const paychecks = {
     },
     setPairBillPaycheckStatus(state, status) {
       state.pairBillPaycheckStatus = status;
+    },
+    setUpdateBillPaycheckStatus(state, status) {
+      state.updateBillPaycheckStatus = status;
+    },
+    setDeleteBillPaycheckStatus(state, status) {
+      state.deleteBillPaycheckStatus = status;
     }
   },
 
@@ -114,6 +154,12 @@ export const paychecks = {
     },
     getPairBillPaycheckState(state) {
       return state.pairBillPaycheckStatus;
+    },
+    getUpdateBillPaycheckStatus(state) {
+      return state.updateBillPaycheckStatus;
+    },
+    getDeleteBillPaycheckStatus(state) {
+      return state.deleteBillPaycheckStatus;
     }
   }
 }

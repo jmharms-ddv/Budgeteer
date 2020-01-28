@@ -11,9 +11,6 @@
               @open="openItem((row - 1)*deckSize + col - 1)"
               @delete="deleteItem((row - 1)*deckSize + col - 1)"
               @edit="editItem((row - 1)*deckSize + col - 1)">
-          <template v-if="content" #default="slotProps">
-            {{ slotProps.value[content] }}
-          </template>
         </item>
       </template>
     </div>
@@ -30,9 +27,6 @@
                   @open="openItem(rowsFull*deckSize + col - 1)"
                   @delete="deleteItem(rowsFull*deckSize + col - 1)"
                   @edit="editItem(rowsFull*deckSize + col - 1)">
-              <template v-if="content" #default="slotProps">
-                {{ slotProps.value[content] }}
-              </template>
             </item>
           </template>
         </div>
@@ -95,9 +89,6 @@
       edit: {
         type: Boolean,
         default: false
-      },
-      content: {
-        type: String
       },
       size: {
         type: Number,

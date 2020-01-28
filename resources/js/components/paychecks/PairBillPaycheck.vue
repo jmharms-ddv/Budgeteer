@@ -22,7 +22,7 @@
              no-close-on-backdrop
              @hidden="onHideModal()">
       <template slot="modal-header">
-        <h5>Pair Bill-Paycheck</h5>
+        <h5>{{ (isUpdate ? 'Update' : 'Pair') }} Bill-Paycheck</h5>
         <button type="button" class="close" aria-label="Close" @click="onClose()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -62,6 +62,9 @@
         </div>
       </form>
       <template slot="modal-footer">
+        <b-button v-if="isUpdate" size="sm" variant="danger" @click="onDeletePair()">
+          Delete
+        </b-button>
         <b-button size="sm" variant="sub1" @click="onClose()">
           Cancel
         </b-button>
@@ -124,13 +127,31 @@
           this.showPairAlert = false;
         }
       });
+      EventBus.$on('pair-update', arr => {
+        this.isUpdate = true;
+        this.bill = arr[0];
+        this.paycheck = arr[1];
+        this.pair.bill_id = this.bill.id;
+        this.pair.paycheck_id = this.paycheck.id;
+        this.pair.paid_on = this.paycheck.pivot_paid_on;
+        this.pair.due_on = this.paycheck.pivot_due_on;
+        if(this.paycheck.pivot_amount == null) {
+          this.projected = true;
+          this.amount = this.paycheck.pivot_amount_projected;
+        } else {
+          this.projected = false;
+          this.amount = this.paycheck.pivot_amount;
+        }
+        this.showModal = true;
+      });
     },
 
     data() {
       return {
+        isUpdate: false,
         showPairAlert: false,
         showModal: false,
-        type: "paycheck",
+        type: "",
         bill: null,
         paycheck: null,
         projected: false,
@@ -178,8 +199,22 @@
         } else {
           this.pair.amount = parseFloat(this.amount);
         }
-        this.$store.dispatch('pairBillPaycheck', this.pair);
+        if(this.isUpdate) {
+          this.$store.dispatch('updateBillPaycheck', this.pair);
+        } else {
+          this.$store.dispatch('pairBillPaycheck', this.pair);
+        }
         this.showModal = false;
+        this.update = false;
+      },
+
+      onDeletePair() {
+        this.$store.dispatch('deleteBillPaycheck', {
+          bill_id: this.pair.bill_id,
+          paycheck_id: this.pair.paycheck_id
+        });
+        this.showModal = false;
+        this.update = false;
       },
 
       onHideModal() {

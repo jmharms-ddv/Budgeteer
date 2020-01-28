@@ -1,8 +1,10 @@
 <template>
   <div class="card"
        id="item"
-       :class="{ 'border-base': !bill_highlight && !paycheck_highlight,
-                 'border-success': (type === 'bills' && bill_highlight) || (type === 'paychecks' && paycheck_highlight) }">
+       :class="{ 'border-base': (type === 'bills' && (bill_stay_highlighted || bill_highlight)) || (type === 'paychecks' && (paycheck_stay_highlighted || paycheck_highlight)),
+                 'shadow-lg': (type === 'bills' && (bill_stay_highlighted || bill_highlight)) || (type === 'paychecks' && (paycheck_stay_highlighted || paycheck_highlight)) }"
+       @mouseover="onHover(true)"
+       @mouseleave="onHover(false)">
     <item-bill v-if="type === 'bills'"
                :value="value"
                :month="month"
@@ -10,14 +12,16 @@
                :open="open"
                :remove="remove"
                :edit="edit"
-               @bill-highlight="onBillHighlight"></item-bill>
+               @bill-highlight="onBillHighlight"
+               @bill-stay-highlighted="onBillStayHighlighted"></item-bill>
      <item-paycheck v-if="type === 'paychecks'"
                     :highlight="paycheck_highlight"
                     :value="value"
                     :open="open"
                     :remove="remove"
                     :edit="edit"
-                    @paycheck-highlight="onPaycheckHighlight"></item-paycheck>
+                    @paycheck-highlight="onPaycheckHighlight"
+                    @paycheck-stay-highlighted="onPaycheckStayHighlighted"></item-paycheck>
   </div>
 </template>
 
@@ -71,17 +75,30 @@
     data() {
       return {
         bill_highlight: false,
-        paycheck_highlight: false
+        bill_stay_highlighted: false,
+        paycheck_highlight: false,
+        paycheck_stay_highlighted: false
       };
     },
 
     methods: {
       onBillHighlight(value, event) {
         this.bill_highlight = value;
+        //'border-base': !bill_highlight && !paycheck_highlight,
+      },
+      onBillStayHighlighted(value, event) {
+        this.bill_stay_highlighted = value;
       },
       onPaycheckHighlight(value, event) {
         this.paycheck_highlight = value;
-      }
+      },
+      onPaycheckStayHighlighted(value, event) {
+        this.paycheck_stay_highlighted = value;
+      },
+      onHover(value) {
+        if(this.type === 'bills') this.bill_highlight = value;
+        if(this.type === 'paychecks') this.paycheck_highlight = value;
+      },
     }
   }
 </script>
