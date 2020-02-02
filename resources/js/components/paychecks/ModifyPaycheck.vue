@@ -1,5 +1,5 @@
 <template>
-  <div id="make-paycheck">
+  <div id="modify-paycheck">
     <b-alert :show="message.countDown"
              dismissible
              :variant="message.type"
@@ -8,7 +8,7 @@
              @dismiss-count-down="countDownChanged">
       {{message.message}}
     </b-alert>
-    <b-modal v-model="showModal" ref="make-paycheck-modal" id="make-paycheck-modal" title="Make Paycheck" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" ref="modify-paycheck-modal" id="modify-paycheck-modal" title="Edit Paycheck" centered no-close-on-backdrop>
       <form @submit.prevent="onSave(paycheck)">
         <div class="form-group">
           <label for="income_id">Income: </label>
@@ -101,10 +101,11 @@
     data() {
       return {
         paycheck: {
+          id: 0,
           income_id: 0,
           amount_project: 0,
           amount: 0,
-          paid_on: null
+          paid_on: ""
         }
       };
     },
@@ -130,27 +131,26 @@
       }
     },
     created() {
-      EventBus.$on('make-paycheck', arr => {
-        this.paycheck.income_id = arr[0];
-        this.paycheck.amount_project = null;
-        this.paycheck.amount = null;
-        this.paycheck.paid_on = arr[1];
+      EventBus.$on('modify-paycheck', obj => {
+        this.paycheck.id = obj.id;
+        this.paycheck.income_id = obj.income_id;
+        this.paycheck.amount_project = obj.amount_project;
+        this.paycheck.amount = obj.amount;
+        this.paycheck.paid_on = obj.paid_on;
         this.showModal = true;
       });
     },
     methods: {
       onSave(paycheck) {
-        this.$store.dispatch('addPaycheck', paycheck);
+        this.$store.dispatch('editPaycheck', paycheck);
         this.$emit('close');
       }
     },
-
     computed: {
       showModal: {
         get() {
           return this.show;
         },
-
         set(value) {
           if(value) {
             this.$emit('open');
@@ -159,7 +159,6 @@
           }
         }
       },
-
       /**
         Gets the incomes
         */

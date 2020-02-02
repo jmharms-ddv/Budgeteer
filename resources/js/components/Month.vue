@@ -5,7 +5,7 @@
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
-            Bills <button type="button" :disabled="showmakebill" class="btn btn-outline-base btn-sm" @click="$emit('open-make-bill', startDate)">+</button>
+            Bills <button type="button" :disabled="showmakebill" class="btn btn-outline-base btn-sm" @click="makeBill()">+</button>
           </div>
           <hr>
           <collection :items="billsMonth"
@@ -19,7 +19,7 @@
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
-            Paychecks <button type="button" :disabled="showmakepaycheck" class="btn btn-outline-base btn-sm" @click="$emit('open-make-paycheck', startDate)">+</button>
+            Paychecks <button type="button" :disabled="showmakepaycheck" class="btn btn-outline-base btn-sm" @click="makePaycheck()">+</button>
           </div>
           <hr>
           <collection :items="paychecksMonth"
@@ -34,13 +34,12 @@
 </template>
 
 <script>
-  import MakePaycheck from './paychecks/MakePaycheck.vue';
   import Collection from './Collection.vue';
+  import { EventBus } from '../event-bus.js';
   import moment from 'moment';
   export default {
     components: {
-      Collection,
-      'make-paycheck': MakePaycheck
+      Collection
     },
     props: {
       month: {
@@ -166,6 +165,14 @@
     methods: {
       itemSelected(id, event) {
 
+      },
+
+      makeBill() {
+        EventBus.$emit('make-bill', this.startDate);
+      },
+
+      makePaycheck() {
+        EventBus.$emit('make-paycheck', [this.incomesshown, this.startDate]);
       }
     }
   }

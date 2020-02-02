@@ -1,5 +1,5 @@
 <template>
-  <div id="make-bill">
+  <div id="modify-bill">
     <b-alert :show="message.countDown"
              dismissible
              :variant="message.type"
@@ -8,7 +8,7 @@
              @dismiss-count-down="countDownChanged">
       {{message.message}}
     </b-alert>
-    <b-modal v-model="showModal" ref="make-bill-modal" id="make-bill-modal" title="Make Bill" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" ref="modify-bill-modal" id="modify-bill-modal" title="Edit Bill" centered no-close-on-backdrop>
       <form @submit.prevent="onSave(bill)">
         <div class="form-group">
           <label for="name">Name: </label>
@@ -100,6 +100,7 @@
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
   import { required, minValue, maxValue, integer } from 'vuelidate/lib/validators';
+  import { cloneDeep } from 'lodash';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
   export default {
@@ -121,6 +122,7 @@
     data() {
       return {
         bill: {
+          id: 0,
           name: "",
           amount: null,
           day_due_on: null,
@@ -153,19 +155,20 @@
     },
 
     created() {
-      EventBus.$on('make-bill', start_on => {
-        this.bill.name = "";
-        this.bill.amount = null;
-        this.bill.day_due_on = null;
-        this.bill.start_on = start_on;
-        this.bill.end_on = "";
+      EventBus.$on('modify-bill', obj => {
+        this.bill.id = obj.id;
+        this.bill.name = obj.name;
+        this.bill.amount = obj.amount;
+        this.bill.day_due_on = obj.day_due_on;
+        this.bill.start_on = obj.start_on;
+        this.bill.end_on = obj.end_on;
         this.showModal = true;
       });
     },
 
     methods: {
       onSave(bill) {
-        this.$store.dispatch('addBill', bill);
+        this.$store.dispatch('editBill', bill);
         this.$emit('close');
       }
     },
