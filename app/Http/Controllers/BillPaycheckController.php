@@ -74,8 +74,8 @@ class BillPaycheckController extends Controller
         $request->validate([
             'bill_id' => 'required|integer',
             'paycheck_id' => 'required|integer',
-            'amount' => 'nullable|digits_between:2,8',
-            'amount_project' => 'nullable|digits_between:2,8',
+            'amount' => 'nullable|numeric|between:0.01,99999.99',
+            'amount_project' => 'nullable|numeric|between:0.01,99999.99',
             'due_on' => 'required|date',
             'paid_on' => 'nullable|date'
         ]);

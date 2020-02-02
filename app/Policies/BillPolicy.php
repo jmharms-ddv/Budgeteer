@@ -30,7 +30,7 @@ class BillPolicy
      */
     public function view(User $user, Bill $bill)
     {
-        return $bill->user_id == $user;
+        return $bill->user_id == $user->id;
     }
 
     /**
@@ -53,7 +53,7 @@ class BillPolicy
      */
     public function update(User $user, Bill $bill)
     {
-        return $bill->user_id == $user;
+        return $bill->user_id == $user->id;
     }
 
     /**
@@ -65,7 +65,7 @@ class BillPolicy
      */
     public function delete(User $user, Bill $bill)
     {
-        return $bill->user_id == $user;
+        return $bill->user_id == $user->id;
     }
 
     /**

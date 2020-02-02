@@ -37,11 +37,12 @@ class IncomePolicy
      * Determine whether the user can create incomes.
      *
      * @param  \App\User  $user
+     * @param  \App\Income  $income
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Income $income)
     {
-        return true;
+        return $user->id == $income->user_id;
     }
 
     /**
