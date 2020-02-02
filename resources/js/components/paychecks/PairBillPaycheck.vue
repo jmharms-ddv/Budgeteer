@@ -80,16 +80,13 @@
   import { BAlert, BButton, BModal } from 'bootstrap-vue';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
-
   export default {
     components: {
       'b-alert': BAlert,
       'b-button': BButton,
       'b-modal': BModal
     },
-
     mixins: [Alert],
-
     created() {
       EventBus.$on('paycheck-pair-start', obj => {
         this.paycheck = obj;
@@ -145,7 +142,6 @@
         this.showModal = true;
       });
     },
-
     data() {
       return {
         isUpdate: false,
@@ -167,7 +163,6 @@
         }
       };
     },
-
     methods: {
       hasNoRelationship(bill, paycheck) {
         for(let i in bill.paychecks) {
@@ -177,7 +172,6 @@
         }
         return true;
       },
-
       onDismissAlert() {
         if(this.paycheck == null) {
           this.onHideModal();
@@ -192,7 +186,6 @@
           this.onHideModal();
         }
       },
-
       onSave() {
         if(this.projected) {
           this.pair.amount_project = parseFloat(this.amount);
@@ -207,7 +200,6 @@
         this.showModal = false;
         this.update = false;
       },
-
       onDeletePair() {
         this.$store.dispatch('deleteBillPaycheck', {
           bill_id: this.pair.bill_id,
@@ -227,12 +219,10 @@
         this.pair.due_on = "";
         this.pair.paid_on = "";
       },
-
       onClose() {
         this.showModal = false;
       }
     },
-
     computed: {
       paycheckLeft() {
         if(this.paycheck == null) return 0;

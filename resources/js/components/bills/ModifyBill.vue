@@ -131,7 +131,6 @@
         }
       };
     },
-
     validations: {
       bill: {
         name: {
@@ -153,7 +152,6 @@
         }
       }
     },
-
     created() {
       EventBus.$on('modify-bill', obj => {
         this.bill.id = obj.id;
@@ -165,14 +163,12 @@
         this.showModal = true;
       });
     },
-
     methods: {
       onSave(bill) {
         this.$store.dispatch('editBill', bill);
         this.$emit('close');
       }
     },
-
     computed: {
       showModal: {
         get() {
@@ -187,7 +183,6 @@
           }
         }
       },
-
       /**
         Gets the incomes
         */
