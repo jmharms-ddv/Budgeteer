@@ -113,6 +113,10 @@
         this.receivingPair = true;
         this.$emit('bill-stay-highlighted', true);
       });
+      EventBus.$on('bill-pair-end', obj => {
+        this.receivingPair = false;
+        this.$emit('bill-stay-highlighted', false);
+      });
       EventBus.$on('paycheck-pair-end', obj => {
         if(this.receivingPair) {
           this.receivingPair = false;
