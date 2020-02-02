@@ -133,14 +133,14 @@
         this.paycheck = arr[1];
         this.pair.bill_id = this.bill.id;
         this.pair.paycheck_id = this.paycheck.id;
-        this.pair.paid_on = this.paycheck.pivot_paid_on;
-        this.pair.due_on = this.paycheck.pivot_due_on;
-        if(this.paycheck.pivot_amount == null) {
+        this.pair.paid_on = this[arr[2]].pivot_paid_on;
+        this.pair.due_on = this[arr[2]].pivot_due_on;
+        if(this[arr[2]].pivot_amount == null) {
           this.projected = true;
-          this.amount = this.paycheck.pivot_amount_projected;
+          this.amount = this[arr[2]].pivot_amount_projected;
         } else {
           this.projected = false;
-          this.amount = this.paycheck.pivot_amount;
+          this.amount = this[arr[2]].pivot_amount;
         }
         this.showModal = true;
       });
