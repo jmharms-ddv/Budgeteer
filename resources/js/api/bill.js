@@ -28,18 +28,36 @@ export default {
     }
     return axios.get(BUDGETEER_CONFIG.API_URL + '/bill' + (optionsStr == '?' ? '' : optionsStr));
   },
-
   /*
-      GET     /api/bill/{id}
+    GET     /api/bill/{id}
+    @param id int
+    @return Promise
   */
   getBill: function(id) {
     return axios.get(BUDGETEER_CONFIG.API_URL + '/bill/' + id);
   },
-
   /*
-      POST     /api/income
+    POST     /api/bill
+    @param data object
+    @return Promise
   */
   postBill: function(data) {
     return axios.post(BUDGETEER_CONFIG.API_URL + '/bill', data);
+  },
+  /*
+    PUT     /api/bill
+    @param data object
+    @return Promise
+  */
+  putBill: function(data) {
+    return axios.put(BUDGETEER_CONFIG.API_URL + '/bill', data);
+  },
+  /*
+    DELETE  /api/bill
+    @param id int
+    @return Promise
+  */
+  deleteBill: function(id) {
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/bill/', id);
   }
 }

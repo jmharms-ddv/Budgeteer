@@ -35,15 +35,18 @@ export default {
     @return Promise
   */
   postPaycheck: function(data) {
-    return axios.post(BUDGETEER_CONFIG.API_URL + '/paycheck', {
-      income_id: data.income_id,
-      amount: data.amount,
-      amount_project: data.amount_project,
-      paid_on: data.paid_on
-    });
+    return axios.post(BUDGETEER_CONFIG.API_URL + '/paycheck', data);
   },
   /*
-    POST   /api/billpaycheck
+    PUT     /api/paycheck
+    @param data object
+    @return Promise
+  */
+  putPaycheck: function(data) {
+    return axios.put(BUDGETEER_CONFIG.API_URL + '/paycheck', data);
+  },
+  /*
+    POST    /api/billpaycheck
     @param data object
     @return Promise
   */
@@ -51,7 +54,7 @@ export default {
     return axios.post(BUDGETEER_CONFIG.API_URL + '/billpaycheck', data);
   },
   /*
-    PUT   /api/billpaycheck
+    PUT     /api/billpaycheck
     @param data object
     @return Promise
   */
@@ -59,11 +62,12 @@ export default {
     return axios.put(BUDGETEER_CONFIG.API_URL + '/billpaycheck', data);
   },
   /*
-    DELETE   /api/billpaycheck/{billId}/{paycheckId}
-    @param data object
+    DELETE  /api/billpaycheck/{billId}/{paycheckId}
+    @param bill_id int
+    @param paycheck_id int
     @return Promise
   */
-  deleteBillPaycheck: function(data) {
-    return axios.delete(BUDGETEER_CONFIG.API_URL + '/billpaycheck/' + data.bill_id + '/' + data.paycheck_id);
+  deleteBillPaycheck: function(bill_id, paycheck_id) {
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/billpaycheck/' + bill_id + '/' + paycheck_id);
   }
 }

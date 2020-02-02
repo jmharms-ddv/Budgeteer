@@ -21,21 +21,36 @@ export default {
     }
     return axios.get(BUDGETEER_CONFIG.API_URL + '/income' + (optionsStr == '?' ? '' : optionsStr));
   },
-
   /*
-      GET     /api/income/{id}
-      @param id int
+    GET     /api/income/{id}
+    @param id int
+    @return Promise
   */
   getIncome: function(id) {
     return axios.get(BUDGETEER_CONFIG.API_URL + '/income/' + id);
   },
-
   /*
-      POST     /api/income
+    POST     /api/income
+    @param data object
+    @return Promise
   */
   postIncome: function(data) {
-    return axios.post(BUDGETEER_CONFIG.API_URL + '/income', {
-      name: data.name
-    });
+    return axios.post(BUDGETEER_CONFIG.API_URL + '/income', data);
+  },
+  /*
+    PUT     /api/income
+    @param data object
+    @return Promise
+  */
+  putIncome: function(data) {
+    return axios.put(BUDGETEER_CONFIG.API_URL + '/income', data);
+  },
+  /*
+    DELETE  /api/income
+    @param id int
+    @return Promise
+  */
+  deleteIncome: function(id) {
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/income', id);
   }
 }
