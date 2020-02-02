@@ -11,16 +11,15 @@ export const paychecks = {
   state: {
     paychecks: [],
     paychecksLoadStatus: 0,
-
     paycheck: {},
     paycheckLoadStatus: 0,
-
     addPaycheckStatus: 0,
+    editPaycheckStatus: 0,
+    deletePaycheckStatus: 0,
     pairBillPaycheckStatus: 0,
     updateBillPaycheckStatus: 0,
     deleteBillPaycheckStatus: 0
   },
-
   actions: {
     loadPaychecks({ commit }, data) {
       commit('setPaychecksLoadStatus', 1);
@@ -59,6 +58,19 @@ export const paychecks = {
           commit('setAddPaycheckStatus', 3);
         });
     },
+    editPaycheck({ commit, state, dispatch }, data) {
+      commit('setEditPaycheckStatus', 1);
+      PaycheckAPI.putPaycheck(data)
+        .then(res => {
+          commit('setEditPaycheckStatus', 2);
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
+        })
+        .catch(err => {
+          commit('setEditPaycheckStatus', 3);
+        });
+    },
     pairBillPaycheck({ commit, state, dispatch }, data) {
       commit('setPairBillPaycheckStatus', 1);
       PaycheckAPI.postBillPaycheck(data)
@@ -93,7 +105,7 @@ export const paychecks = {
     },
     deleteBillPaycheck({ commit, state, dispatch }, data) {
       commit('setDeleteBillPaycheckStatus', 1);
-      PaycheckAPI.deleteBillPaycheck(data)
+      PaycheckAPI.deleteBillPaycheck(data.bill_id, data.paycheck_id)
         .then(res => {
           commit('setDeleteBillPaycheckStatus', 2);
           dispatch('loadIncomes', {
@@ -108,7 +120,6 @@ export const paychecks = {
         });
     }
   },
-
   mutations: {
     setPaychecksLoadStatus(state, status) {
       state.paychecksLoadStatus = status;
@@ -125,6 +136,12 @@ export const paychecks = {
     setAddPaycheckStatus(state, status) {
       state.addPaycheckStatus = status;
     },
+    setEditPaycheckStatus(state, status) {
+      state.editPaycheckStatus = status;
+    },
+    setDeletePaycheckStatus(state, status) {
+      state.deletePaycheckStatus = status;
+    },
     setPairBillPaycheckStatus(state, status) {
       state.pairBillPaycheckStatus = status;
     },
@@ -135,7 +152,6 @@ export const paychecks = {
       state.deleteBillPaycheckStatus = status;
     }
   },
-
   getters: {
     getPaychecksLoadStatus(state) {
       return state.paychecksLoadStatus;
@@ -151,6 +167,12 @@ export const paychecks = {
     },
     getAddPaycheckState(state) {
       return state.addPaycheckStatus;
+    },
+    getEditPaycheckState(state) {
+      return state.editPaycheckStatus;
+    },
+    getDeletePaycheckState(state) {
+      return state.deletePaycheckStatus;
     },
     getPairBillPaycheckState(state) {
       return state.pairBillPaycheckStatus;
