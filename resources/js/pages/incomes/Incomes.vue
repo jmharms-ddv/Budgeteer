@@ -1,8 +1,11 @@
 <template>
   <div id="incomes" class="container-fluid">
-    <make-income :show="showMakeForm"
-                  @open="showMakeForm = true"
-                  @close="showMakeForm = false"></make-income>
+    <make-income :show="showMake"
+                  @open="showMake = true"
+                  @close="showMake = false"></make-income>
+    <modify-income :show="showModify"
+                  @open="showModify = true"
+                  @close="showModify = false"></modify-income>
     <div class="d-flex justify-content-between">
       <h3>Sources of Income</h3>
       <button type="button" class="btn btn-outline-base" @click="makeIncome()">+</button>
@@ -17,15 +20,18 @@
 <script>
   import Collection from '../../components/Collection.vue';
   import MakeIncome from '../../components/incomes/MakeIncome.vue';
+  import ModifyIncome from '../../components/incomes/ModifyIncome.vue';
   import { EventBus } from '../../event-bus.js';
   export default {
     components: {
       Collection,
-      'make-income': MakeIncome
+      'make-income': MakeIncome,
+      'modify-income': ModifyIncome
     },
     data() {
       return {
-        showMakeForm: false
+        showMake: false,
+        showModify: false
       }
     },
     created() {

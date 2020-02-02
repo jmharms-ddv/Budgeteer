@@ -1,13 +1,12 @@
 <template>
   <div class="card-body">
-    <div class="d-flex justify-content-between">
+    <div class="text-center">
       <h5 class="card-title">
         {{ income.name }}
       </h5>
     </div>
-    <div v-if="highlight" class="d-flex justify-content-between mt-2">
+    <div v-if="highlight" class="text-center mt-2">
       <button class="btn btn-outline-sub1 btn-sm" @click="onModify()">Edit</button>
-      <button class="btn btn-outline-sub2 btn-sm" @click="onDelete()">Delete</button>
     </div>
   </div>
 </template>
@@ -56,9 +55,6 @@
     methods: {
       onModify() {
         EventBus.$emit('modify-income', this.income);
-      },
-      onDelete() {
-
       }
     },
     computed: {
