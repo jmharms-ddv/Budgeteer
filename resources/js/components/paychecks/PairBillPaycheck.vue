@@ -30,13 +30,11 @@
       <form @submit.prevent="onSave()" v-if="paycheck != null && bill != null">
         <div class="row">
           <div class="col">
-            <h5 v-if="amount">${{ paycheckLeft }} - ${{ amount }}</h5>
-            <h5 v-else>${{ paycheckLeft }}</h5>
-            <p class="text-muted">
-              Paycheck left
-            </p>
+            <h5>Paycheck ${{ paycheck.amount == null ? paycheck.amount_project : paycheck.amount }}</h5>
+            <small class="text-muted mb-0">Paid on: {{ paycheck_paid_on }}</small>
           </div>
           <div class="col form-group">
+            <h5>{{ bill.name }}</h5>
             <label class="sr-only" for="amount">Amount</label>
             <div class="input-group">
               <div class="input-group-prepend">
@@ -78,6 +76,7 @@
 
 <script>
   import { BAlert, BButton, BModal } from 'bootstrap-vue';
+  import moment from 'moment';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
   export default {
@@ -128,16 +127,17 @@
         this.isUpdate = true;
         this.bill = arr[0];
         this.paycheck = arr[1];
+        this.pivotIn = arr[2];
         this.pair.bill_id = this.bill.id;
         this.pair.paycheck_id = this.paycheck.id;
-        this.pair.paid_on = this[arr[2]].pivot_paid_on;
-        this.pair.due_on = this[arr[2]].pivot_due_on;
-        if(this[arr[2]].pivot_amount == null) {
+        this.pair.paid_on = this[this.pivotIn].pivot_paid_on;
+        this.pair.due_on = this[this.pivotIn].pivot_due_on;
+        if(this[this.pivotIn].pivot_amount == null) {
           this.projected = true;
-          this.amount = this[arr[2]].pivot_amount_projected;
+          this.amount = ""+this[this.pivotIn].pivot_amount_project;
         } else {
           this.projected = false;
-          this.amount = this[arr[2]].pivot_amount;
+          this.amount = ""+this[this.pivotIn].pivot_amount;
         }
         this.showModal = true;
       });
@@ -153,6 +153,7 @@
         projected: false,
         amount: "",
         month: [],
+        pivotIn: "",
         pair: {
           bill_id: null,
           paycheck_id: null,
@@ -231,6 +232,10 @@
           total -= (this.paycheck.bills[i].pivot_amount ? this.paycheck.bills[i].pivot_amount == null : this.paycheck.bills[i].pivot_amount_project);
         }
         return total;
+      },
+      paycheck_paid_on() {
+        if(this.paycheck == null) return "";
+        return moment(this.paycheck.paid_on).format('ddd, MMM D');
       }
     }
   }
