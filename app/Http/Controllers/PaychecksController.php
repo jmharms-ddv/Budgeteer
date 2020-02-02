@@ -33,7 +33,7 @@ class PaychecksController extends Controller
         $this->authorize('index', Paycheck::class);
         /* extract options */
         $optionsArr = $this->extractOptions($request);
-        /* fetch models with options */
+        /* find models with options */
         $paychecks = Paycheck::whereHas('income', function(Builder $query) use ($request) {
             $query->where('user_id', $request->user()->id);
         })->with($optionsArr['with'])->get();
@@ -56,7 +56,7 @@ class PaychecksController extends Controller
             'amount_project' => 'nullable|numeric|between:0.01,99999.99',
             'paid_on' => 'required|date'
         ]);
-        /* find resource */
+        /* find model */
         $income = Income::findOrFail($request->input('income_id'));
         /* authorization */
         $paycheck = new Paycheck;
@@ -89,7 +89,7 @@ class PaychecksController extends Controller
             'amount_project' => 'nullable|numeric|between:0.01,99999.99',
             'paid_on' => 'nullable|date'
         ]);
-        /* find resource */
+        /* find model */
         $paycheck = Paycheck::findOrFail($request->input('id'));
         /* authorization */
         $this->authorize('update', $paycheck);
@@ -112,7 +112,7 @@ class PaychecksController extends Controller
      */
     public function show($id)
     {
-        /* find resource */
+        /* find model */
         $paycheck = Paycheck::findOrFail($id);
         /* authorization */
         $this->authorize('view', $paycheck);
@@ -128,7 +128,7 @@ class PaychecksController extends Controller
      */
     public function destroy($id)
     {
-        /* find resource */
+        /* find model */
         $paycheck = Paycheck::findOrFail($id);
         /* authorization */
         $this->authorize('delete', $paycheck);

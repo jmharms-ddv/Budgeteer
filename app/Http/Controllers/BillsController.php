@@ -32,7 +32,7 @@ class BillsController extends Controller
         $this->authorize('index', Bill::class);
         /* extract options */
         $optionsArr = $this->extractOptions($request);
-        /* fetch models with options */
+        /* find models with options */
         $bills = Bill::where('user_id', $request->user()->id)->with($optionsArr['with'])->get();
         if(!empty($optionsArr['filter_date'])) {
             $filter_dateArr = $optionsArr['filter_date'];
@@ -104,7 +104,7 @@ class BillsController extends Controller
             'start_on' => 'required|date',
             'end_on' => 'required|date|after:'.$request->input('start_on')
         ]);
-        /* find resource */
+        /* find model */
         $bill = Bill::findOrFail($request->input('id'));
         /* authorization */
         $this->authorize('update', $bill);
@@ -129,7 +129,7 @@ class BillsController extends Controller
      */
     public function show($id)
     {
-        /* find resource */
+        /* find model */
         $bill = Bill::findOrFail($id);
         /* authorization */
         $this->authorize('view', $bill);
@@ -145,7 +145,7 @@ class BillsController extends Controller
      */
     public function destroy($id)
     {
-        /* find resource */
+        /* find model */
         $bill = Bill::findOrFail($id);
         /* authorization */
         $this->authorize('delete', $bill);

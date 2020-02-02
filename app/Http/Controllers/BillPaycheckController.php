@@ -111,7 +111,7 @@ class BillPaycheckController extends Controller
      */
     public function destroy($billId, $paycheckId)
     {
-        /* find resources */
+        /* find models */
         $bill = Bill::findOrFail($billId);
         $paycheck = Paycheck::findOrFail($paycheckId);
         /* authorization */
