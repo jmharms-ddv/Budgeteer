@@ -1,12 +1,16 @@
 <template>
   <div class="card"
        id="item"
-       :class="{ 'border-base': (type === 'bills' && (bill_stay_highlighted || bill_highlight)) || (type === 'paychecks' && (paycheck_stay_highlighted || paycheck_highlight)),
-                 'shadow-lg': (type === 'bills' && (bill_stay_highlighted || bill_highlight)) || (type === 'paychecks' && (paycheck_stay_highlighted || paycheck_highlight)) }"
+       :class="{ 'border-base': (type === 'bills' && (bill_stay_highlighted || bill_highlight))
+                                || (type === 'paychecks' && (paycheck_stay_highlighted || paycheck_highlight))
+                                || (type === 'incomes' && (income_stay_highlighted || income_highlight)),
+                 'shadow-lg': (type === 'bills' && (bill_stay_highlighted || bill_highlight))
+                              || (type === 'paychecks' && (paycheck_stay_highlighted || paycheck_highlight))
+                              || (type === 'incomes' && (income_stay_highlighted || income_highlight)) }"
        @mouseover="onHover(true)"
        @mouseleave="onHover(false)">
     <item-bill v-if="type === 'bills'"
-               :value="value"
+               :bill="value"
                :month="month"
                :highlight="bill_highlight"
                :open="open"
@@ -16,12 +20,18 @@
                @bill-stay-highlighted="onBillStayHighlighted"></item-bill>
      <item-paycheck v-if="type === 'paychecks'"
                     :highlight="paycheck_highlight"
-                    :value="value"
+                    :paycheck="value"
                     :open="open"
                     :remove="remove"
                     :edit="edit"
                     @paycheck-highlight="onPaycheckHighlight"
                     @paycheck-stay-highlighted="onPaycheckStayHighlighted"></item-paycheck>
+     <item-income v-if="type === 'incomes'"
+                  :highlight="income_highlight"
+                  :income="value"
+                  :open="open"
+                  :remove="remove"
+                  :edit="edit"></item-income>
   </div>
 </template>
 
@@ -37,12 +47,14 @@
 
 <script>
   import { EventBus } from '../event-bus.js';
-  import ItemBill from './ItemBill.vue';
-  import ItemPaycheck from './ItemPaycheck.vue';
+  import ItemBill from './bills/ItemBill.vue';
+  import ItemPaycheck from './paychecks/ItemPaycheck.vue';
+  import ItemIncome from './incomes/ItemIncome.vue';
   export default {
     components: {
       'item-bill': ItemBill,
-      'item-paycheck': ItemPaycheck
+      'item-paycheck': ItemPaycheck,
+      'item-income': ItemIncome
     },
 
     props: {
@@ -77,14 +89,15 @@
         bill_highlight: false,
         bill_stay_highlighted: false,
         paycheck_highlight: false,
-        paycheck_stay_highlighted: false
+        paycheck_stay_highlighted: false,
+        income_highlight: false,
+        income_stay_highlighted: false
       };
     },
 
     methods: {
       onBillHighlight(value, event) {
         this.bill_highlight = value;
-        //'border-base': !bill_highlight && !paycheck_highlight,
       },
       onBillStayHighlighted(value, event) {
         this.bill_stay_highlighted = value;
@@ -98,6 +111,7 @@
       onHover(value) {
         if(this.type === 'bills') this.bill_highlight = value;
         if(this.type === 'paychecks') this.paycheck_highlight = value;
+        if(this.type === 'incomes') this.income_highlight = value;
       },
     }
   }

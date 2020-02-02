@@ -9,17 +9,17 @@
       {{message.message}}
     </b-alert>
     <b-modal v-model="showModal" ref="make-income-modal" id="make-income-modal" title="Make Income" centered no-close-on-backdrop>
-      <form @submit.prevent="onSave(name)">
+      <form @submit.prevent="onSave(income)">
         <div class="form-group">
           <label for="name">Name: </label>
-          <input class="form-control" id="name" type="text" placeholder="Income Name" v-model="name">
+          <input class="form-control" id="name" type="text" placeholder="Income Name" v-model="income.name">
         </div>
       </form>
       <template slot="modal-footer">
         <b-button size="sm" variant="sub1" @click="$emit('close')">
           Cancel
         </b-button>
-        <b-button size="sm" variant="base" @click="onSave(name)">
+        <b-button size="sm" variant="base" @click="onSave(income)">
           Save
         </b-button>
       </template>
@@ -30,6 +30,7 @@
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
   import Alert from '../../api/alert.js';
+  import { EventBus } from '../../event-bus.js';
   export default {
     components: {
       'b-modal': BModal,
@@ -48,35 +49,28 @@
     mixins: [Alert],
     data() {
       return {
-        name: ''
+        income: {
+          name: ''
+        }
       };
     },
-
-    mounted() {
-      this.$root.$on('bv::modal::hide', (bvModalEvt, modalId) => {
-        if(modalId == 'make-income-modal') {
-          this.$emit('close');
-        }
-      });
-      this.$root.$on('bv::modal::show', (bvModalEvt, modalId) => {
-        if(modalId == 'make-income-modal') {
-
-        }
+    created() {
+      EventBus.$on('make-income', () => {
+        this.income.name = '';
+        this.showModal = true;
       });
     },
-
     methods: {
-      onSave(name) {
-        this.$emit('save', name);
+      onSave(income) {
+        this.$store.dispatch('addIncome', income);
+        this.$emit('close');
       }
     },
-
     computed: {
       showModal: {
         get() {
           return this.show;
         },
-
         set(value) {
           if(value) {
             this.$emit('open');
