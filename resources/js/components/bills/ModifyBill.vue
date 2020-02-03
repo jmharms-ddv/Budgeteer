@@ -174,7 +174,6 @@
         get() {
           return this.show;
         },
-
         set(value) {
           if(value) {
             this.$emit('open');
