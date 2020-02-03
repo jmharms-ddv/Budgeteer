@@ -25,6 +25,9 @@
         </div>
       </form>
       <template slot="modal-footer">
+        <b-button size="sm" variant="danger" @click="onDelete(income)">
+          Delete
+        </b-button>
         <b-button size="sm" variant="sub1" @click="$emit('close')">
           Cancel
         </b-button>
@@ -85,6 +88,10 @@
     methods: {
       onSave(income) {
         this.$store.dispatch('editIncome', income);
+        this.$emit('close');
+      },
+      onDelete(income) {
+        EventBus.$emit('delete-income', income);
         this.$emit('close');
       }
     },

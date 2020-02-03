@@ -51,6 +51,6 @@ export default {
     @return Promise
   */
   deleteIncome: function(id) {
-    return axios.delete(BUDGETEER_CONFIG.API_URL + '/income', id);
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/income/' + id);
   }
 }

@@ -20,7 +20,7 @@ class CreatePaychecksTable extends Migration
             $table->date('paid_on');
             $table->timestamps();
 
-            $table->foreign('income_id')->references('id')->on('incomes');
+            $table->foreign('income_id')->references('id')->on('incomes')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

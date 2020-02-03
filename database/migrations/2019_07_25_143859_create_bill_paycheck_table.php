@@ -20,9 +20,9 @@ class CreateBillPaycheckTable extends Migration
             $table->date('paid_on')->nullable();
             $table->timestamps();
 
-            $table->foreign('bill_id')->references('id')->on('bills');
-            $table->foreign('paycheck_id')->references('id')->on('paychecks');
-            
+            $table->foreign('bill_id')->references('id')->on('bills')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('paycheck_id')->references('id')->on('paychecks')->onDelete('cascade')->onUpdate('cascade');
+
             $table->primary(['bill_id', 'paycheck_id']);
         });
     }
