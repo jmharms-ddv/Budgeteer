@@ -62,6 +62,7 @@
       return {
         income: {
           id: 0,
+          user_id: 0,
           name: ""
         }
       };
@@ -76,6 +77,7 @@
     created() {
       EventBus.$on('modify-income', obj => {
         this.income.id = obj.id;
+        this.income.user_id = obj.user_id;
         this.income.name = obj.name;
         this.showModal = true;
       });
