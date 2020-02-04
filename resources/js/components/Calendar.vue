@@ -1,14 +1,11 @@
 <template>
   <div id="calendar">
-    <make-paycheck :show="paycheck.showMake"
-                   @open="paycheck.showMake = true"
-                   @close="paycheck.showMake = false"></make-paycheck>
-    <modify-paycheck :show="paycheck.showModify"
-                     @open="paycheck.showModify = true"
-                     @close="paycheck.showModify = false"></modify-paycheck>
     <make-bill :show="bill.showMake" @open="bill.showMake = true" @close="bill.showMake = false"></make-bill>
     <modify-bill :show="bill.showModify" @open="bill.showModify = true" @close="bill.showModify = false"></modify-bill>
     <delete-bill :show="bill.showDelete" @open="bill.showDelete = true" @close="bill.showDelete = false"></delete-bill>
+    <make-paycheck :show="paycheck.showMake" @open="paycheck.showMake = true" @close="paycheck.showMake = false"></make-paycheck>
+    <modify-paycheck :show="paycheck.showModify" @open="paycheck.showModify = true" @close="paycheck.showModify = false"></modify-paycheck>
+    <delete-paycheck :show="paycheck.showDelete" @open="paycheck.showDelete = true" @close="paycheck.showDelete = false"></delete-paycheck>
     <pair-bill-paycheck></pair-bill-paycheck>
     <div class="row">
       <div class="col-sm-1">
@@ -54,6 +51,7 @@
   import DeleteBill from './bills/DeleteBill.vue';
   import MakePaycheck from './paychecks/MakePaycheck.vue';
   import ModifyPaycheck from './paychecks/ModifyPaycheck.vue';
+  import DeletePaycheck from './paychecks/DeletePaycheck.vue';
   import PairBillPaycheck from './paychecks/PairBillPaycheck.vue';
   import { cloneDeep } from 'lodash';
   import moment from 'moment';
@@ -65,6 +63,7 @@
       'delete-bill': DeleteBill,
       'make-paycheck': MakePaycheck,
       'modify-paycheck': ModifyPaycheck,
+      'delete-paycheck': DeletePaycheck,
       'pair-bill-paycheck': PairBillPaycheck
     },
     props: {
@@ -104,7 +103,8 @@
         },
         paycheck: {
           showMake: false,
-          showModify: false
+          showModify: false,
+          showDelete: false
         }
       };
     },

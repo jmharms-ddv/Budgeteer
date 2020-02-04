@@ -46,6 +46,14 @@ export default {
     return axios.put(BUDGETEER_CONFIG.API_URL + '/paycheck', data);
   },
   /*
+    DELETE   /api/paycheck/{id}
+    @param id int
+    @return Promise
+  */
+  deletePaycheck: function(id) {
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/paycheck/' + id);
+  },
+  /*
     POST    /api/billpaycheck
     @param data object
     @return Promise

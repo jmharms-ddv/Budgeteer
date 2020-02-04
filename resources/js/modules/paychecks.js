@@ -71,6 +71,22 @@ export const paychecks = {
           commit('setEditPaycheckStatus', 3);
         });
     },
+    deletePaycheck({ commit, state, dispatch }, id) {
+      commit('setDeletePaycheckStatus', 1);
+      PaycheckAPI.deletePaycheck(id)
+        .then(res => {
+          commit('setDeletePaycheckStatus', 2);
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
+          dispatch('loadBills', {
+            with: ['paychecks']
+          });
+        })
+        .catch(err => {
+          commit('setDeletePaycheckStatus', 3);
+        });
+    },
     pairBillPaycheck({ commit, state, dispatch }, data) {
       commit('setPairBillPaycheckStatus', 1);
       PaycheckAPI.postBillPaycheck(data)
@@ -165,16 +181,16 @@ export const paychecks = {
     getPaycheck(state) {
       return state.paycheck;
     },
-    getAddPaycheckState(state) {
+    getAddPaycheckStatus(state) {
       return state.addPaycheckStatus;
     },
-    getEditPaycheckState(state) {
+    getEditPaycheckStatus(state) {
       return state.editPaycheckStatus;
     },
-    getDeletePaycheckState(state) {
+    getDeletePaycheckStatus(state) {
       return state.deletePaycheckStatus;
     },
-    getPairBillPaycheckState(state) {
+    getPairBillPaycheckStatus(state) {
       return state.pairBillPaycheckStatus;
     },
     getUpdateBillPaycheckStatus(state) {

@@ -19,7 +19,6 @@
                 class="btn btn-outline-base btn-sm"
                 @click="onPair()">Pair</button>
         <button class="btn btn-outline-sub1 btn-sm" @click="onModify()">Edit</button>
-        <button class="btn btn-outline-sub2 btn-sm" @click="$emit('delete')">Delete</button>
       </div>
       <div v-if="receivingPair" class="text-center mt-2">
         <button type="button"
@@ -109,9 +108,6 @@
     methods: {
       onModify() {
         EventBus.$emit('modify-paycheck', this.paycheck);
-      },
-      onDelete() {
-
       },
       onPairUpdate(bill) {
         EventBus.$emit('pair-update', [bill, this.paycheck, 'bill']);
