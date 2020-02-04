@@ -25,28 +25,29 @@
         </div>
         <div class="row">
           <div class="col form-group">
-            <label for="amount_project">Amount Projected: </label>
-            <input class="form-control"
-                    :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
-                              'is-valid': !$v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending }"
-                    id="amount_project"
-                    type="text"
-                    placeholder="Amount Projected"
-                    v-model="paycheck.amount_project">
-            <div v-if="!$v.paycheck.amount_project.required" class="invalid-feedback">
+            <label for="amount">Amount: </label>
+            <div v-if="projected" class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">$</div>
+              </div>
+              <input type="text" class="form-control" id="amount" placeholder="Amount" v-model="paycheck.amount_project" :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
+                        'is-valid': !$v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending }">
+            </div>
+            <div v-else class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">$</div>
+              </div>
+              <input type="text" class="form-control" id="amount" placeholder="Amount" v-model="paycheck.amount" :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
+                        'is-valid': !$v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending }">
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="projected" v-model="projected" @change="onCheck()">
+              <label class="custom-control-label" for="projected">Projected?</label>
+            </div>
+            <div v-if="projected && !$v.paycheck.amount_project.required" class="invalid-feedback">
               Amount is required
             </div>
-          </div>
-          <div class="col form-group">
-            <label for="amount">Amount: </label>
-            <input class="form-control"
-                    :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
-                              'is-valid': !$v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending }"
-                    id="amount"
-                    type="text"
-                    placeholder="Amount"
-                    v-model="paycheck.amount">
-            <div v-if="!$v.paycheck.amount.required" class="invalid-feedback">
+            <div v-if="!projected && !$v.paycheck.amount.required" class="invalid-feedback">
               Amount is required
             </div>
           </div>
@@ -100,11 +101,12 @@
     mixins: [Alert],
     data() {
       return {
+        projected: false,
         paycheck: {
           income_id: 0,
-          amount_project: 0,
-          amount: 0,
-          paid_on: null
+          amount_project: null,
+          amount: null,
+          paid_on: ""
         }
       };
     },
@@ -142,15 +144,22 @@
       onSave(paycheck) {
         this.$store.dispatch('addPaycheck', paycheck);
         this.$emit('close');
+      },
+      onCheck() {
+        if(this.projected) {
+          this.paycheck.amount_project = this.paycheck.amount;
+          this.paycheck.amount = null;
+        } else {
+          this.paycheck.amount = this.paycheck.amount_project;
+          this.paycheck.amount_project = null;
+        }
       }
     },
-
     computed: {
       showModal: {
         get() {
           return this.show;
         },
-
         set(value) {
           if(value) {
             this.$emit('open');
@@ -159,7 +168,6 @@
           }
         }
       },
-
       /**
         Gets the incomes
         */
