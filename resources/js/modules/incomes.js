@@ -17,8 +17,7 @@ export const incomes = {
     addIncomeErr: "",
     editIncomeStatus: 0,
     editIncomeErr: "",
-    deleteIncomeStatus: 0,
-    deleteIncomeErr: ""
+    deleteIncomeStatus: 0
   },
   actions: {
     loadIncomes({ commit }, data) {
@@ -81,7 +80,6 @@ export const incomes = {
           });
         })
         .catch(err => {
-          commit('setDeleteIncomeErr', err);
           commit('setDeleteIncomeStatus', 3);
         });
     }
@@ -108,9 +106,6 @@ export const incomes = {
     },
     setDeleteIncomeStatus(state, status) {
       state.deleteIncomeStatus = status;
-    },
-    setDeleteIncomeErr(state, err) {
-      state.deleteIncomeErr = err;
     }
   },
 
@@ -135,9 +130,6 @@ export const incomes = {
     },
     getDeleteIncomeStatus(state) {
       return state.deleteIncomeStatus;
-    },
-    getDeleteIncomeErr(state) {
-      return state.deleteIncomeErr;
     }
   }
 }
