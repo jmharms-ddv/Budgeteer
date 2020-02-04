@@ -22,6 +22,12 @@
           <div v-if="!$v.income.name.required" class="invalid-feedback">
             Name is required
           </div>
+          <div v-if="!$v.income.name.minLength" class="invalid-feedback">
+            Name must be at least 2 characters
+          </div>
+          <div v-if="!$v.income.name.maxLength" class="invalid-feedback">
+            Name cannot be more than 50 characters
+          </div>
         </div>
       </form>
       <template slot="modal-footer">
@@ -41,7 +47,7 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
-  import { required, minValue, maxValue, integer } from 'vuelidate/lib/validators';
+  import { required, minLength, maxLength } from 'vuelidate/lib/validators';
   import { cloneDeep } from 'lodash';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
@@ -73,7 +79,9 @@
     validations: {
       income: {
         name: {
-          required
+          required,
+          minLength: minLength(2),
+          maxLength: maxLength(50)
         }
       }
     },
@@ -85,10 +93,15 @@
         this.showModal = true;
       });
     },
+    beforeDestroy() {
+      EventBus.$off('modify-income');
+    },
     methods: {
       onSave(income) {
-        this.$store.dispatch('editIncome', income);
-        this.$emit('close');
+        if(!this.$v.income.$invalid) {
+          this.$store.dispatch('editIncome', income);
+          this.$emit('close');
+        }
       },
       onDelete(income) {
         EventBus.$emit('delete-income', income);
