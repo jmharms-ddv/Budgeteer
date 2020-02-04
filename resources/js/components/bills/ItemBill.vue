@@ -49,7 +49,6 @@
       </div>
     </template>
     <div v-if="highlight && !receivingPair" class="d-flex justify-content-between mt-2">
-      <button class="btn btn-outline-sub1 btn-sm" @click="onModify()">Edit</button>
       <button v-if="paycheck.hasOwnProperty('id')"
               type="button"
               class="btn btn-outline-base btn-sm"
@@ -58,7 +57,7 @@
               type="button"
               class="btn btn-outline-base btn-sm"
               @click="onPair()">Pair</button>
-      <button class="btn btn-outline-sub2 btn-sm" @click="onDelete()">Delete</button>
+      <button class="btn btn-outline-sub1 btn-sm" @click="onModify()">Edit</button>
     </div>
     <div v-if="receivingPair" class="text-center mt-2">
       <button type="button"
@@ -132,9 +131,6 @@
     methods: {
       onModify() {
         EventBus.$emit('modify-bill', this.bill);
-      },
-      onDelete() {
-
       },
       onPairUpdate() {
         EventBus.$emit('pair-update', [this.bill, this.paycheck, 'paycheck']);

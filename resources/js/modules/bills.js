@@ -14,7 +14,8 @@ export const bills = {
     bill: {},
     billLoadStatus: 0,
     addBillStatus: 0,
-    editBillStatus: 0
+    editBillStatus: 0,
+    deleteBillStatus: 0
   },
   actions: {
     loadBills({ commit }, data) {
@@ -67,6 +68,22 @@ export const bills = {
         .catch(err => {
           commit('setEditBillStatus', 3);
         });
+    },
+    deleteBill({ commit, state, dispatch }, id) {
+      commit('setDeleteBillStatus', 1);
+      BillAPI.deleteBill(id)
+        .then(res => {
+          commit('setDeleteBillStatus', 2);
+          dispatch('loadBills', {
+            with: ['paychecks']
+          });
+          dispatch('loadIncomes', {
+            with: ['paychecks.bills']
+          });
+        })
+        .catch(err => {
+          commit('setDeleteBillStatus', 3);
+        });
     }
   },
   mutations: {
@@ -87,6 +104,9 @@ export const bills = {
     },
     setEditBillStatus(state, status) {
       state.editBillStatus = status;
+    },
+    setDeleteBillStatus(state, status) {
+      state.deleteBillStatus = status;
     }
   },
   getters: {
@@ -107,6 +127,9 @@ export const bills = {
     },
     getEditBillStatus(state) {
       return state.editBillStatus;
+    },
+    getDeleteBillStatus(state) {
+      return state.deleteBillStatus;
     }
   }
 }

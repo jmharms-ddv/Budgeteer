@@ -86,6 +86,9 @@
         </div>
       </form>
       <template slot="modal-footer">
+        <b-button size="sm" variant="danger" @click="onDelete(bill)">
+          Delete
+        </b-button>
         <b-button size="sm" variant="sub1" @click="$emit('close')">
           Cancel
         </b-button>
@@ -166,6 +169,10 @@
     methods: {
       onSave(bill) {
         this.$store.dispatch('editBill', bill);
+        this.$emit('close');
+      },
+      onDelete(bill) {
+        EventBus.$emit('delete-bill', bill);
         this.$emit('close');
       }
     },

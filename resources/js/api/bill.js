@@ -58,6 +58,6 @@ export default {
     @return Promise
   */
   deleteBill: function(id) {
-    return axios.delete(BUDGETEER_CONFIG.API_URL + '/bill/', id);
+    return axios.delete(BUDGETEER_CONFIG.API_URL + '/bill/' + id);
   }
 }
