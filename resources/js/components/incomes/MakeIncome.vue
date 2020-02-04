@@ -12,7 +12,18 @@
       <form @submit.prevent="onSave(income)">
         <div class="form-group">
           <label for="name">Name: </label>
-          <input class="form-control" id="name" type="text" placeholder="Income Name" v-model="income.name">
+          <input class="form-control" :class="{ 'is-invalid': $v.income.name.$invalid && !$v.income.name.$pending,
+                                                'is-valid': !$v.income.name.$invalid && !$v.income.name.$pending }"
+                 id="name" type="text" placeholder="Income Name" v-model="income.name">
+          <div v-if="!$v.income.name.required" class="invalid-feedback">
+            Name is required
+          </div>
+          <div v-if="!$v.income.name.minLength" class="invalid-feedback">
+            Name must be at least 2 characters
+          </div>
+          <div v-if="!$v.income.name.maxLength" class="invalid-feedback">
+            Name cannot be more than 50 characters
+          </div>
         </div>
       </form>
       <template slot="modal-footer">
@@ -29,6 +40,7 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
+  import { required, minLength, maxLength } from 'vuelidate/lib/validators';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
   export default {
@@ -50,20 +62,34 @@
     data() {
       return {
         income: {
-          name: ''
+          name: ""
         }
       };
     },
+    validations: {
+      income: {
+        name: {
+          required,
+          minLength: minLength(2),
+          maxLength: maxLength(50)
+        }
+      }
+    },
     created() {
       EventBus.$on('make-income', () => {
-        this.income.name = '';
+        this.income.name = "";
         this.showModal = true;
       });
     },
+    beforeDestroy() {
+      EventBus.$off('make-income');
+    },
     methods: {
       onSave(income) {
-        this.$store.dispatch('addIncome', income);
-        this.$emit('close');
+        if(!this.$v.income.$invalid) {
+          this.$store.dispatch('addIncome', income);
+          this.$emit('close');
+        }
       }
     },
     computed: {
