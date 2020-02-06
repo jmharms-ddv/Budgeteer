@@ -144,8 +144,10 @@
     },
     methods: {
       onSave(paycheck) {
-        this.$store.dispatch('addPaycheck', paycheck);
-        this.$emit('close');
+        if(!this.$v.paycheck.$invalid) {
+          this.$store.dispatch('addPaycheck', paycheck);
+          this.$emit('close');
+        }
       },
       formatAmount() {
         if(Number(this.paycheck.amount).toFixed(2) != "NaN") {
