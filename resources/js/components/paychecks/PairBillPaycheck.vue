@@ -40,22 +40,45 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">$</div>
               </div>
-              <input type="text" class="form-control" id="amount" placeholder="Amount" v-model="amount">
+              <input v-if="projected" type="text" class="form-control" id="amount" placeholder="Amount"
+                     v-model="pair.amount_project" @blur="formatAmountProject()"
+                     :class="{ 'is-invalid': $v.pair.amount_project.$invalid && !$v.pair.amount_project.$pending,
+                               'is-valid': !$v.pair.amount_project.$invalid && !$v.pair.amount_project.$pending }">
+              <input v-else type="text" class="form-control" id="amount" placeholder="Amount"
+                     v-model="pair.amount" @blur="formatAmount()"
+                     :class="{ 'is-invalid': $v.pair.amount.$invalid && !$v.pair.amount.$pending,
+                               'is-valid': !$v.pair.amount.$invalid && !$v.pair.amount.$pending }">
             </div>
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="projected" v-model="projected">
+              <input type="checkbox" class="custom-control-input" id="projected" v-model="projected" @change="onCheck()">
               <label class="custom-control-label" for="projected">Projected?</label>
+            </div>
+            <div v-if="!$v.pair.amount.required || !$v.pair.amount_project.required" class="invalid-feedback d-block">
+              Amount is required
+            </div>
+            <div v-if="!$v.pair.amount.validDecimal || !$v.pair.amount_project.validDecimal" class="invalid-feedback d-block">
+              Amount must be a valid decimal ($xxxx.xx)
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col form-group">
             <label for="due_on">Due on: </label>
-            <input type="date" class="form-control" id="due_on" v-model="pair.due_on">
+            <input type="date" class="form-control" id="due_on" v-model="pair.due_on"
+                   :class="{ 'is-invalid': $v.pair.due_on.$invalid && !$v.pair.due_on.$pending,
+                             'is-valid': !$v.pair.due_on.$invalid && !$v.pair.due_on.$pending }">
+            <div v-if="!$v.pair.due_on.required" class="invalid-feedback">
+              Due On is required
+            </div>
           </div>
           <div class="col form-group">
             <label for="paid_on">Paid on: </label>
-            <input type="date" class="form-control" id="paid_on" v-model="pair.paid_on">
+            <input type="date" class="form-control" id="paid_on" v-model="pair.paid_on"
+                   :class="{ 'is-invalid': !isNullOrEmpty($v.pair.paid_on.$model) && $v.pair.paid_on.$invalid && !$v.pair.paid_on.$pending,
+                             'is-valid': !isNullOrEmpty($v.pair.paid_on.$model) && !$v.pair.paid_on.$invalid && !$v.pair.paid_on.$pending }">
+            <div v-if="!$v.pair.paid_on.maxValue" class="invalid-feedback">
+              Paid On must be before or on the date due
+            </div>
           </div>
         </div>
       </form>
@@ -76,9 +99,11 @@
 
 <script>
   import { BAlert, BButton, BModal } from 'bootstrap-vue';
+  import { helpers, required, requiredIf, maxValue } from 'vuelidate/lib/validators';
   import moment from 'moment';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
+  const validDecimal = helpers.regex('validDecimal', /^\d{0,4}(\.\d{0,2})?$/);
   export default {
     components: {
       'b-alert': BAlert,
@@ -104,7 +129,7 @@
         if(obj != null) {
           this.paycheck = obj;
           this.pair.paycheck_id = obj.id;
-          this.amount = "" + this.bill.amount;
+          this.pair.amount = "" + this.bill.amount;
           this.pair.due_on = "" + this.month[1] + "-" +
                             (this.month[0] > 9 ? this.month[0] : "0" + this.month[0]) + "-" +
                             (this.bill.day_due_on > 9 ? this.bill.day_due_on : "0" + this.bill.day_due_on);
@@ -116,7 +141,7 @@
           this.bill = arr[0];
           this.month = arr[1];
           this.pair.bill_id = this.bill.id;
-          this.amount = "" + this.bill.amount;
+          this.pair.amount = "" + this.bill.amount;
           this.pair.due_on = "" + this.month[1] + "-" +
                             (this.month[0] > 9 ? this.month[0] : "0" + this.month[0]) + "-"+
                             (this.bill.day_due_on > 9 ? this.bill.day_due_on : "0" + this.bill.day_due_on);
@@ -134,13 +159,20 @@
         this.pair.due_on = this[this.pivotIn].pivot_due_on;
         if(this[this.pivotIn].pivot_amount == null) {
           this.projected = true;
-          this.amount = ""+this[this.pivotIn].pivot_amount_project;
+          this.pair.amount_project = ""+this[this.pivotIn].pivot_amount_project;
         } else {
           this.projected = false;
-          this.amount = ""+this[this.pivotIn].pivot_amount;
+          this.pair.amount = ""+this[this.pivotIn].pivot_amount;
         }
         this.showModal = true;
       });
+    },
+    beforeDestroy() {
+      EventBus.$off('paycheck-pair-start');
+      EventBus.$off('bill-pair-start');
+      EventBus.$off('paycheck-pair-end');
+      EventBus.$off('bill-pair-end');
+      EventBus.$off('pair-update');
     },
     data() {
       return {
@@ -151,7 +183,6 @@
         bill: null,
         paycheck: null,
         projected: false,
-        amount: "",
         month: [],
         pivotIn: "",
         pair: {
@@ -163,6 +194,28 @@
           paid_on: ""
         }
       };
+    },
+    validations: {
+      pair: {
+        amount_project: {
+          required: requiredIf(function() {
+            return !this.pair.amount;
+          }),
+          validDecimal
+        },
+        amount: {
+          required: requiredIf(function() {
+            return !this.pair.amount_project;
+          }),
+          validDecimal
+        },
+        due_on: {
+          required
+        },
+        paid_on: {
+          maxValue
+        }
+      }
     },
     methods: {
       hasNoRelationship(bill, paycheck) {
@@ -181,6 +234,7 @@
           this.onHideModal();
           EventBus.$emit('bill-pair-end', null);
         } else if(this.hasNoRelationship(this.bill, this.paycheck)) {
+          this.formatAmount();
           this.showModal = true;
         } else {
           this.showAlert('warning', "The bill and paycheck selected are already paired.");
@@ -189,15 +243,19 @@
       },
       onSave() {
         if(this.projected) {
-          this.pair.amount_project = parseFloat(this.amount);
+          //this.pair.amount_project = parseFloat(this.amount);
         } else {
-          this.pair.amount = parseFloat(this.amount);
+          //this.pair.amount = parseFloat(this.amount);
         }
         if(this.isUpdate) {
           this.$store.dispatch('updateBillPaycheck', this.pair);
         } else {
           this.$store.dispatch('pairBillPaycheck', this.pair);
         }
+        this.showModal = false;
+        this.update = false;
+      },
+      onClose() {
         this.showModal = false;
         this.update = false;
       },
@@ -209,7 +267,6 @@
         this.showModal = false;
         this.update = false;
       },
-
       onHideModal() {
         this.bill = null;
         this.paycheck = null;
@@ -220,8 +277,30 @@
         this.pair.due_on = "";
         this.pair.paid_on = "";
       },
-      onClose() {
-        this.showModal = false;
+      formatAmount() {
+        console.log("the pair amount does not equal to NaN");
+        console.log(Number(this.pair.amount) != "NaN");
+        if(Number(this.pair.amount).toFixed(2) != "NaN") {
+          this.pair.amount = Number(this.pair.amount).toFixed(2);
+        }
+      },
+      formatAmountProject() {
+        console.log(Number(this.pair.amount_project) != "NaN");
+        if(Number(this.pair.amount_project).toFixed(2) != "NaN") {
+          this.pair.amount_project = Number(this.pair.amount_project).toFixed(2);
+        }
+      },
+      isNullOrEmpty(value) {
+        return value === null || value === ""
+      },
+      onCheck() {
+        if(this.projected) {
+          this.pair.amount_project = this.pair.amount;
+          this.pair.amount = null;
+        } else {
+          this.pair.amount = this.pair.amount_project;
+          this.pair.amount_project = null;
+        }
       }
     },
     computed: {
