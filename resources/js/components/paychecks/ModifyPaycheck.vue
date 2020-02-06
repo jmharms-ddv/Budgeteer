@@ -25,29 +25,29 @@
         </div>
         <div class="row">
           <div class="col form-group">
-            <label for="amount_project">Amount Projected: </label>
-            <input class="form-control"
-                    :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
-                              'is-valid': !$v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending }"
-                    id="amount_project"
-                    type="text"
-                    placeholder="Amount Projected"
-                    v-model="paycheck.amount_project">
-            <div v-if="!$v.paycheck.amount_project.required" class="invalid-feedback">
+            <label for="amount">Amount: </label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">$</div>
+              </div>
+              <input v-if="projected" type="text" class="form-control" id="amount" placeholder="Amount"
+                     v-model="paycheck.amount_project" @blur="formatAmountProject()"
+                     :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
+                               'is-valid': !$v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending }">
+              <input v-else type="text" class="form-control" id="amount" placeholder="Amount"
+                     v-model="paycheck.amount" @blur="formatAmount()"
+                     :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
+                               'is-valid': !$v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending }">
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="projected" v-model="projected" @change="onCheck()">
+              <label class="custom-control-label" for="projected">Projected?</label>
+            </div>
+            <div v-if="!$v.paycheck.amount.required || !$v.paycheck.amount_project.required" class="invalid-feedback d-block">
               Amount is required
             </div>
-          </div>
-          <div class="col form-group">
-            <label for="amount">Amount: </label>
-            <input class="form-control"
-                    :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
-                              'is-valid': !$v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending }"
-                    id="amount"
-                    type="text"
-                    placeholder="Amount"
-                    v-model="paycheck.amount">
-            <div v-if="!$v.paycheck.amount.required" class="invalid-feedback">
-              Amount is required
+            <div v-if="!$v.paycheck.amount.validDecimal || !$v.paycheck.amount_project.validDecimal" class="invalid-feedback d-block">
+              Amount must be a valid decimal ($xxxx.xx)
             </div>
           </div>
         </div>
@@ -82,9 +82,10 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
-  import { required, requiredIf, minValue, numeric } from 'vuelidate/lib/validators';
+  import { helpers, required, requiredIf, minValue } from 'vuelidate/lib/validators';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
+  const validDecimal = helpers.regex('validDecimal', /^\d{0,4}(\.\d{0,2})?$/);
   export default {
     components: {
       'b-modal': BModal,
@@ -103,11 +104,12 @@
     mixins: [Alert],
     data() {
       return {
+        projected: false,
         paycheck: {
           id: 0,
           income_id: 0,
-          amount_project: 0,
-          amount: 0,
+          amount_project: null,
+          amount: null,
           paid_on: ""
         }
       };
@@ -121,12 +123,14 @@
         amount_project: {
           required: requiredIf(function() {
             return !this.paycheck.amount;
-          })
+          }),
+          validDecimal
         },
         amount: {
           required: requiredIf(function() {
             return !this.paycheck.amount_project;
-          })
+          }),
+          validDecimal
         },
         paid_on: {
           required
@@ -137,8 +141,15 @@
       EventBus.$on('modify-paycheck', obj => {
         this.paycheck.id = obj.id;
         this.paycheck.income_id = obj.income_id;
-        this.paycheck.amount_project = obj.amount_project;
-        this.paycheck.amount = obj.amount;
+        if(obj.amount == null) {
+          this.paycheck.amount_project = ""+obj.amount_project;
+          this.paycheck.amount = null;
+          this.projected = true;
+        } else {
+          this.paycheck.amount = ""+obj.amount;
+          this.paycheck.amount_project = null;
+          this.projected = false;
+        }
         this.paycheck.paid_on = obj.paid_on;
         this.showModal = true;
       });
@@ -151,6 +162,25 @@
       onDelete(paycheck) {
         EventBus.$emit('delete-paycheck', paycheck);
         this.$emit('close');
+      },
+      formatAmount() {
+        if(Number(this.paycheck.amount).toFixed(2) != "NaN") {
+          this.paycheck.amount = Number(this.paycheck.amount).toFixed(2);
+        }
+      },
+      formatAmountProject() {
+        if(Number(this.paycheck.amount_project).toFixed(2) != "NaN") {
+          this.paycheck.amount_project = Number(this.paycheck.amount_project).toFixed(2);
+        }
+      },
+      onCheck() {
+        if(this.projected) {
+          this.paycheck.amount_project = this.paycheck.amount;
+          this.paycheck.amount = null;
+        } else {
+          this.paycheck.amount = this.paycheck.amount_project;
+          this.paycheck.amount_project = null;
+        }
       }
     },
     computed: {
