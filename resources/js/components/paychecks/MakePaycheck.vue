@@ -26,29 +26,28 @@
         <div class="row">
           <div class="col form-group">
             <label for="amount">Amount: </label>
-            <div v-if="projected" class="input-group">
+            <div class="input-group">
               <div class="input-group-prepend">
                 <div class="input-group-text">$</div>
               </div>
-              <input type="text" class="form-control" id="amount" placeholder="Amount" v-model="paycheck.amount_project" :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
-                        'is-valid': !$v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending }">
-            </div>
-            <div v-else class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">$</div>
-              </div>
-              <input type="text" class="form-control" id="amount" placeholder="Amount" v-model="paycheck.amount" :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
-                        'is-valid': !$v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending }">
+              <input v-if="projected" type="text" class="form-control" id="amount" placeholder="Amount"
+                     v-model="paycheck.amount_project" @blur="formatAmountProject()"
+                     :class="{ 'is-invalid': $v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending,
+                               'is-valid': !$v.paycheck.amount_project.$invalid && !$v.paycheck.amount_project.$pending }">
+              <input v-else type="text" class="form-control" id="amount" placeholder="Amount"
+                     v-model="paycheck.amount" @blur="formatAmount()"
+                     :class="{ 'is-invalid': $v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending,
+                               'is-valid': !$v.paycheck.amount.$invalid && !$v.paycheck.amount.$pending }">
             </div>
             <div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" id="projected" v-model="projected" @change="onCheck()">
               <label class="custom-control-label" for="projected">Projected?</label>
             </div>
-            <div v-if="projected && !$v.paycheck.amount_project.required" class="invalid-feedback">
+            <div v-if="!$v.paycheck.amount.required || !$v.paycheck.amount_project.required" class="invalid-feedback d-block">
               Amount is required
             </div>
-            <div v-if="!projected && !$v.paycheck.amount.required" class="invalid-feedback">
-              Amount is required
+            <div v-if="!$v.paycheck.amount.validDecimal || !$v.paycheck.amount_project.validDecimal" class="invalid-feedback d-block">
+              Amount must be a valid decimal ($xxxx.xx)
             </div>
           </div>
         </div>
@@ -80,9 +79,10 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
-  import { required, requiredIf, minValue, numeric } from 'vuelidate/lib/validators';
+  import { helpers, required, requiredIf, minValue } from 'vuelidate/lib/validators';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
+  const validDecimal = helpers.regex('validDecimal', /^\d{0,4}(\.\d{0,2})?$/);
   export default {
     components: {
       'b-modal': BModal,
@@ -119,12 +119,14 @@
         amount_project: {
           required: requiredIf(function() {
             return !this.paycheck.amount;
-          })
+          }),
+          validDecimal
         },
         amount: {
           required: requiredIf(function() {
             return !this.paycheck.amount_project;
-          })
+          }),
+          validDecimal
         },
         paid_on: {
           required
@@ -144,6 +146,16 @@
       onSave(paycheck) {
         this.$store.dispatch('addPaycheck', paycheck);
         this.$emit('close');
+      },
+      formatAmount() {
+        if(Number(this.paycheck.amount).toFixed(2) != "NaN") {
+          this.paycheck.amount = Number(this.paycheck.amount).toFixed(2);
+        }
+      },
+      formatAmountProject() {
+        if(Number(this.paycheck.amount_project).toFixed(2) != "NaN") {
+          this.paycheck.amount_project = Number(this.paycheck.amount_project).toFixed(2);
+        }
       },
       onCheck() {
         if(this.projected) {
