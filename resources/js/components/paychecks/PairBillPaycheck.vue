@@ -242,18 +242,15 @@
         }
       },
       onSave() {
-        if(this.projected) {
-          //this.pair.amount_project = parseFloat(this.amount);
-        } else {
-          //this.pair.amount = parseFloat(this.amount);
+        if(!this.$v.pair.$invalid) {
+          if(this.isUpdate) {
+            this.$store.dispatch('updateBillPaycheck', this.pair);
+          } else {
+            this.$store.dispatch('pairBillPaycheck', this.pair);
+          }
+          this.showModal = false;
+          this.update = false;
         }
-        if(this.isUpdate) {
-          this.$store.dispatch('updateBillPaycheck', this.pair);
-        } else {
-          this.$store.dispatch('pairBillPaycheck', this.pair);
-        }
-        this.showModal = false;
-        this.update = false;
       },
       onClose() {
         this.showModal = false;
@@ -278,20 +275,11 @@
         this.pair.paid_on = "";
       },
       formatAmount() {
-<<<<<<< HEAD
-=======
-        console.log("the pair amount does not equal to NaN");
-        console.log(Number(this.pair.amount) != "NaN");
->>>>>>> 3d5e176cf8432c4913bc4eff6c1a9529a25bab85
         if(Number(this.pair.amount).toFixed(2) != "NaN") {
           this.pair.amount = Number(this.pair.amount).toFixed(2);
         }
       },
       formatAmountProject() {
-<<<<<<< HEAD
-=======
-        console.log(Number(this.pair.amount_project) != "NaN");
->>>>>>> 3d5e176cf8432c4913bc4eff6c1a9529a25bab85
         if(Number(this.pair.amount_project).toFixed(2) != "NaN") {
           this.pair.amount_project = Number(this.pair.amount_project).toFixed(2);
         }
