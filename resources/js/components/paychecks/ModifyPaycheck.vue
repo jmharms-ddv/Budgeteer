@@ -156,8 +156,10 @@
     },
     methods: {
       onSave(paycheck) {
-        this.$store.dispatch('editPaycheck', paycheck);
-        this.$emit('close');
+        if(!this.$v.paycheck.$invalid) {
+          this.$store.dispatch('editPaycheck', paycheck);
+          this.$emit('close');
+        }
       },
       onDelete(paycheck) {
         EventBus.$emit('delete-paycheck', paycheck);
