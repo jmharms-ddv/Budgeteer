@@ -59,10 +59,15 @@
               @click="onPair()">Pair</button>
       <button class="btn btn-outline-sub1 btn-sm" @click="onModify()">Edit</button>
     </div>
-    <div v-if="receivingPair" class="text-center mt-2">
+    <div v-if="receivingPair && !canStopPair" class="text-center mt-2">
       <button type="button"
               class="btn btn-outline-base btn-sm"
               @click="onPair()">Pair</button>
+    </div>
+    <div v-if="canStopPair" class="text-center mt-2">
+      <button type="button"
+              class="btn btn-outline-base btn-sm"
+              @click="onStopPair()">Stop Pair</button>
     </div>
   </div>
 </template>
@@ -112,6 +117,11 @@
         this.receivingPair = true;
         this.$emit('bill-stay-highlighted', true);
       });
+      EventBus.$on('bill-pair-start', arr => {
+        if(arr[0].id == this.bill.id && this.month[0] == arr[1][0] && this.month[1] == arr[1][1]) {
+          this.canStopPair = true;
+        }
+      })
       EventBus.$on('bill-pair-end', obj => {
         this.receivingPair = false;
         this.$emit('bill-stay-highlighted', false);
@@ -125,7 +135,8 @@
     },
     data() {
       return {
-        receivingPair: false
+        receivingPair: false,
+        canStopPair: false
       };
     },
     methods: {
@@ -144,6 +155,10 @@
         } else {
           EventBus.$emit('bill-pair-end', [this.bill, this.month]);
         }
+      },
+      onStopPair() {
+        this.canStopPair = false;
+        EventBus.$emit('paycheck-pair-end', null);
       }
     },
     computed: {

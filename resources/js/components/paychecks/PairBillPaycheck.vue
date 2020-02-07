@@ -134,6 +134,9 @@
                             (this.month[0] > 9 ? this.month[0] : "0" + this.month[0]) + "-" +
                             (this.bill.day_due_on > 9 ? this.bill.day_due_on : "0" + this.bill.day_due_on);
           this.showPairAlert = false;
+        } else {
+          this.showPairAlert = false;
+          this.onHideModal();
         }
       });
       EventBus.$on('bill-pair-end', arr => {
@@ -146,6 +149,9 @@
                             (this.month[0] > 9 ? this.month[0] : "0" + this.month[0]) + "-"+
                             (this.bill.day_due_on > 9 ? this.bill.day_due_on : "0" + this.bill.day_due_on);
           this.showPairAlert = false;
+        } else {
+          this.showPairAlert = false;
+          this.onHideModal();
         }
       });
       EventBus.$on('pair-update', arr => {

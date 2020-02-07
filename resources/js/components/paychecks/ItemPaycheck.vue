@@ -20,10 +20,15 @@
                 @click="onPair()">Pair</button>
         <button class="btn btn-outline-sub1 btn-sm" @click="onModify()">Edit</button>
       </div>
-      <div v-if="receivingPair" class="text-center mt-2">
+      <div v-if="receivingPair && !canStopPair" class="text-center mt-2">
         <button type="button"
                 class="btn btn-outline-base btn-sm"
                 @click="onPair()">Pair</button>
+      </div>
+      <div v-if="canStopPair" class="text-center mt-2">
+        <button type="button"
+                class="btn btn-outline-base btn-sm"
+                @click="onStopPair()">Stop Pair</button>
       </div>
     </template>
     <template v-else>
@@ -87,6 +92,11 @@
         this.receivingPair = true;
         this.$emit('paycheck-stay-highlighted', true);
       });
+      EventBus.$on('paycheck-pair-start', obj => {
+        if(obj.id == this.paycheck.id) {
+          this.canStopPair = true;
+        }
+      });
       EventBus.$on('paycheck-pair-end', obj => {
         this.receivingPair = false;
         this.$emit('paycheck-stay-highlighted', false);
@@ -102,6 +112,7 @@
     data() {
       return {
         receivingPair: false,
+        canStopPair: false,
         billsMode: false
       };
     },
@@ -122,6 +133,10 @@
           // case: the paycheck is selected last
           EventBus.$emit('paycheck-pair-end', this.paycheck);
         }
+      },
+      onStopPair() {
+        this.canStopPair = false;
+        EventBus.$emit('bill-pair-end', null);
       },
       getMonthShort(date) {
         return moment(date).format('MMM');
