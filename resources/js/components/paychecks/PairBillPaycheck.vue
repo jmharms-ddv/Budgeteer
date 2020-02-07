@@ -249,12 +249,12 @@
             this.$store.dispatch('pairBillPaycheck', this.pair);
           }
           this.showModal = false;
-          this.update = false;
+          this.isUpdate = false;
         }
       },
       onClose() {
         this.showModal = false;
-        this.update = false;
+        this.isUpdate = false;
       },
       onDeletePair() {
         this.$store.dispatch('deleteBillPaycheck', {
@@ -262,7 +262,7 @@
           paycheck_id: this.pair.paycheck_id
         });
         this.showModal = false;
-        this.update = false;
+        this.isUpdate = false;
       },
       onHideModal() {
         this.bill = null;
