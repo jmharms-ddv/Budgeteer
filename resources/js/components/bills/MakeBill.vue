@@ -22,6 +22,12 @@
           <div v-if="!$v.bill.name.required" class="invalid-feedback">
             Name is required
           </div>
+          <div v-if="!$v.bill.name.minLength" class="invalid-feedback">
+            Name must be at least 2 characters
+          </div>
+          <div v-if="!$v.bill.name.maxLength" class="invalid-feedback">
+            Name cannot be more than 50 characters
+          </div>
         </div>
         <div class="row">
           <div class="col form-group">
@@ -30,16 +36,16 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">$</div>
               </div>
-              <input class="form-control"
+              <input class="form-control" id="amount" type="text" placeholder="Amount"
+                     v-model="bill.amount" @blur="formatAmount()"
                       :class="{ 'is-invalid': $v.bill.amount.$invalid && !$v.bill.amount.$pending,
-                                'is-valid': !$v.bill.amount.$invalid && !$v.bill.amount.$pending }"
-                      id="amount"
-                      type="text"
-                      placeholder="Amount"
-                      v-model="bill.amount">
+                                'is-valid': !$v.bill.amount.$invalid && !$v.bill.amount.$pending }">
             </div>
-            <div v-if="!$v.bill.amount.required" class="invalid-feedback">
+            <div v-if="!$v.bill.amount.required" class="invalid-feedback d-block">
               Amount is required
+            </div>
+            <div v-if="!$v.bill.amount.validDecimal" class="invalid-feedback d-block">
+              Amount must be a valid decimal ($xxxx.xx)
             </div>
           </div>
           <div class="col form-group">
@@ -82,6 +88,9 @@
             <div v-if="!$v.bill.end_on.required" class="invalid-feedback">
               End On Date is required
             </div>
+            <div v-if="!$v.bill.end_on.minDate" class="invalid-feedback">
+              End On Date must be after the Start On Date
+            </div>
           </div>
         </div>
       </form>
@@ -99,9 +108,11 @@
 
 <script>
   import { BModal, BAlert, BButton } from 'bootstrap-vue';
-  import { required, minValue, maxValue, integer } from 'vuelidate/lib/validators';
+  import { helpers, required, minValue, maxValue, integer, minLength, maxLength } from 'vuelidate/lib/validators';
+  import moment from 'moment';
   import Alert from '../../api/alert.js';
   import { EventBus } from '../../event-bus.js';
+  const validDecimal = helpers.regex('validDecimal', /^\d{0,4}(\.\d{0,2})?$/);
   export default {
     components: {
       'b-modal': BModal,
@@ -122,36 +133,40 @@
       return {
         bill: {
           name: "",
-          amount: null,
+          amount: "",
           day_due_on: null,
           start_on: "",
           end_on: ""
         }
       };
     },
-
-    validations: {
-      bill: {
-        name: {
-          required
-        },
-        amount: {
-          required
-        },
-        day_due_on: {
-          integer,
-          minValue: minValue(1),
-          maxValue: maxValue(31)
-        },
-        start_on: {
-          required
-        },
-        end_on: {
-          required
+    validations() {
+      return {
+        bill: {
+          name: {
+            required,
+            minLength: minLength(2),
+            maxLength: maxLength(50)
+          },
+          amount: {
+            required,
+            validDecimal
+          },
+          day_due_on: {
+            integer,
+            minValue: minValue(1),
+            maxValue: maxValue(31)
+          },
+          start_on: {
+            required
+          },
+          end_on: {
+            required,
+            minDate: (end_on) => (end_on == "" || moment(end_on).isAfter(this.bill.start_on))
+          }
         }
       }
     },
-
     created() {
       EventBus.$on('make-bill', start_on => {
         this.bill.name = "";
@@ -162,20 +177,24 @@
         this.showModal = true;
       });
     },
-
     methods: {
       onSave(bill) {
-        this.$store.dispatch('addBill', bill);
-        this.$emit('close');
+        if(!this.$v.bill.$invalid) {
+          this.$store.dispatch('addBill', bill);
+          this.$emit('close');
+        }
+      },
+      formatAmount() {
+        if(Number(this.bill.amount).toFixed(2) != "NaN") {
+          this.bill.amount = Number(this.bill.amount).toFixed(2);
+        }
       }
     },
-
     computed: {
       showModal: {
         get() {
           return this.show;
         },
-
         set(value) {
           if(value) {
             this.$emit('open');
@@ -183,19 +202,6 @@
             this.$emit('close');
           }
         }
-      },
-
-      /**
-        Gets the incomes
-        */
-      incomes() {
-        return this.$store.getters.getIncomes;
-      },
-      /**
-        Gets the incomes load status
-        */
-      incomesLoadStatus() {
-        return this.$store.getters.getIncomesLoadStatus;
       }
     }
   };
