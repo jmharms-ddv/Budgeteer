@@ -77,54 +77,6 @@ export default new VueRouter({
           name: 'incomes',
           component: Vue.component('Incomes', require('./pages/incomes/Incomes.vue').default),
           beforeEnter: requireAuth
-        },
-        {
-          path: '/incomes/new',
-          name: 'newincomes',
-          component: Vue.component('NewIncome', require('./pages/incomes/NewIncome.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/incomes/:id',
-          name: 'income',
-          component: Vue.component('Income', require('./pages/incomes/Income.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/bills',
-          name: 'bills',
-          component: Vue.component('Bills', require('./pages/bills/Bills.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/bills/new',
-          name: 'newbill',
-          component: Vue.component('NewBill', require('./pages/bills/NewBill.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/bills/:id',
-          name: 'bill',
-          component: Vue.component('Bill', require('./pages/bills/Bill.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/paychecks',
-          name: 'paychecks',
-          component: Vue.component('Paychecks', require('./pages/paychecks/Paychecks.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/paychecks/new',
-          name: 'newpaycheck',
-          component: Vue.component('NewPaycheck', require('./pages/paychecks/NewPaycheck.vue').default),
-          beforeEnter: requireAuth
-        },
-        {
-          path: '/paychecks/:id',
-          name: 'paycheck',
-          component: Vue.component('Paycheck', require('./pages/paychecks/Paycheck.vue').default),
-          beforeEnter: requireAuth
         }
     ]
 });
