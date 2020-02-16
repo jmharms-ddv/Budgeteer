@@ -31,7 +31,7 @@
                     {{ config('app.name', 'Laravel') }}
                 </a>
               @else
-                <a class="navbar-brand" href="{{ url('/#/home') }}">
+                <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
               @endguest
@@ -43,6 +43,9 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         @auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="/#/home">Dashboard</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/#/incomes">Incomes</a>
                             </li>
@@ -84,10 +87,7 @@
                 </div>
             </div>
         </nav>
-
-        <main class="py-4">
-            @yield('content')
-        </main>
+        @yield('content')
     </div>
 </body>
 </html>

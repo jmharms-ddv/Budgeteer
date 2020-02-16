@@ -1,23 +1,25 @@
 <template>
-  <div id="incomes" class="container-fluid">
-    <make-income :show="showMake"
-                  @open="showMake = true"
-                  @close="showMake = false"></make-income>
-    <modify-income :show="showModify"
-                  @open="showModify = true"
-                  @close="showModify = false"></modify-income>
-    <delete-income :show="showDelete"
-                  @open="showDelete = true"
-                  @close="showDelete = false"></delete-income>
-    <div class="d-flex justify-content-between">
-      <h3>Sources of Income</h3>
-      <button type="button" class="btn btn-outline-base" @click="makeIncome()">+</button>
+  <main class="py-4">
+    <div id="incomes" class="container-fluid">
+      <make-income :show="showMake"
+                    @open="showMake = true"
+                    @close="showMake = false"></make-income>
+      <modify-income :show="showModify"
+                    @open="showModify = true"
+                    @close="showModify = false"></modify-income>
+      <delete-income :show="showDelete"
+                    @open="showDelete = true"
+                    @close="showDelete = false"></delete-income>
+      <div class="d-flex justify-content-between">
+        <h3>Sources of Income</h3>
+        <button type="button" class="btn btn-outline-base" @click="makeIncome()">+</button>
+      </div>
+      <hr>
+      <collection :items="incomes"
+                  type="incomes"
+                  :size="6"></collection>
     </div>
-    <hr>
-    <collection :items="incomes"
-                type="incomes"
-                :size="6"></collection>
-  </div>
+  </main>
 </template>
 
 <script>

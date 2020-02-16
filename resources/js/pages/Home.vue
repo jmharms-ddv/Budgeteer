@@ -3,17 +3,19 @@
 </style>
 
 <template>
-  <div id="home" class="container-fluid">
-    <select :disabled="disableSelector" class="custom-select custom-select-lg mb-3" v-model.number="incomesSelected">
-      <option value="0" selected>All Incomes</option>
-      <option v-for="income in incomes" :key="income.id" :value="income.id">
-        {{ income.name }}
-      </option>
-    </select>
-    <calendar :total-months="3"
-              :incomes="incomesSelected">
-    </calendar>
-  </div>
+  <main class="py-4">
+    <div id="home" class="container-fluid">
+      <select :disabled="disableSelector" class="custom-select custom-select-lg mb-3" v-model.number="incomesSelected">
+        <option value="0" selected>All Incomes</option>
+        <option v-for="income in incomes" :key="income.id" :value="income.id">
+          {{ income.name }}
+        </option>
+      </select>
+      <calendar :total-months="3"
+                :incomes="incomesSelected">
+      </calendar>
+    </div>
+  </main>
 </template>
 
 <script>
