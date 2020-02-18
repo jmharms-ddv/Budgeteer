@@ -39,13 +39,26 @@
         <span>
           {{ getMonthShort(bill.pivot_due_on) }}
         </span>
+        <span>
+          {{ " $" + (bill.pivot_amount ? bill.pivot_amount : bill.pivot_amount_project) }}
+        </span>
         <button type="button"
                 class="btn btn-outline-base btn-sm"
                 @click="onPairUpdate(bill)">Update</button>
       </div>
-      <div class="d-flex justify-content-between mt-2">
+      <div v-if="highlight && !receivingPair" class="d-flex justify-content-between mt-2">
         <button type="button" class="btn btn-outline-base btn-sm" @click="billsMode = false">Paycheck</button>
-        <button v-if="paycheck.bills.length == 0" type="button" class="btn btn-outline-base btn-sm" @click="onPair()">Pair</button>
+        <button type="button" class="btn btn-outline-base btn-sm" @click="onPair()">Pair</button>
+      </div>
+      <div v-if="receivingPair && !canStopPair" class="text-center mt-2">
+        <button type="button"
+                class="btn btn-outline-base btn-sm"
+                @click="onPair()">Pair</button>
+      </div>
+      <div v-if="canStopPair" class="text-center mt-2">
+        <button type="button"
+                class="btn btn-outline-base btn-sm"
+                @click="onStopPair()">Stop Pair</button>
       </div>
     </template>
   </div>
