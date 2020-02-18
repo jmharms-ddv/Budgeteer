@@ -129,6 +129,7 @@
       EventBus.$on('paycheck-pair-end', obj => {
         if(this.receivingPair) {
           this.receivingPair = false;
+          this.canStopPair = false;
           this.$emit('bill-stay-highlighted', false);
         }
       });

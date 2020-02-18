@@ -104,6 +104,7 @@
       EventBus.$on('bill-pair-end', arr => {
         if(this.receivingPair) {
           this.receivingPair = false;
+          this.canStopPair = false;
           this.$emit('paycheck-stay-highlighted', false);
           this.billsMode = false;
         }
