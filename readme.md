@@ -25,7 +25,7 @@ In the near future, it will live at budgeteer.ironmthome.com, for production tes
 
 ## Entered Testing Phase!
 
-Yay! I've deployed the app at [here](https://www.budgeteer.ironmthome.com) and public registration is open. However, to be able to login in after registration you'll need to be verified. So after registration shoot budgeteer@ironmthome.com an email and I'll verify your account. As I have no documentation on how to use the app (yet) or real testing data, I may ask you to fill out a short servey about the applicaiton and tell me about any problems you had/bugs. Or submit an issue on GitHub (here). Anyways, hope those who use it find it helpful and can help me out. Cheers!
+Yay! I've deployed the app at [here](https://www.budgeteer.ironmthome.com) and public registration is open. However, to be able to login in after registration you'll need to be verified. So after registration shoot budgeteer@ironmthome.com an email and I'll verify your account. As I have no documentation on how to use the app (yet) or real testing data, I may ask you to fill out a short survey about the applicaiton and tell me about any problems you had/bugs. Or submit an issue on GitHub (here). Anyways, hope those who use it find it helpful and can help me out. Cheers!
 -AE (PikaJew002)
 
 ## License
