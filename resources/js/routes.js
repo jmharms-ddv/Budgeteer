@@ -40,13 +40,15 @@ function requireAuth(to, from, next) {
       } else {
         next('/');
       }
+    } else {
+      next('/');
     }
   }
 
   if(store.getters.getUserLoadStatus() != 2) {
     store.dispatch('loadUser');
     store.watch(store.getters.getUserLoadStatus, function() {
-      if(store.getters.getUserLoadStatus() == 2) {
+      if(store.getters.getUserLoadStatus() == 2 || store.getters.getUserLoadStatus() == 3) {
         proceed();
       }
     });
