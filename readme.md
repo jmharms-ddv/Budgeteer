@@ -23,9 +23,9 @@ Currently, I'll be hosting the app on my own private server for my own private u
 
 In the near future, it will live at budgeteer.ironmthome.com, for production testing purposes. If and when that happens shoot me an email if you'd like to use it. The only thing I ask is that you'd provide me with come feedback, in exchange for use of my server space. We both win! You get a soon to be great budget app and I get user feedback!
 
-## Under Construction!
+## Entered Testing Phase!
 
-Full disclosure, the app is near production testing ready (more on that to come) and therefore not fully functioning. In the next month or so (eyes on March 2020), it will go live. As opening registation to the general public on a shared hosting platform is, uh, a stupid idea, I will allow anyone to register, then make an effort to reach out to each registrant and (based on response), grant access (verify account) for unlimited use. As of now, I have no documentation on using the app so that might be up to early testers to help me out with. Cheers!
+Yay! I've deployed the app at [here](https://www.budgeteer.ironmthome.com) and public registration is open. However, to be able to login in after registration you'll need to be verified. So after registration shoot budgeteer@ironmthome.com an email and I'll verify your account. As I have no documentation on how to use the app (yet) or real testing data, I may ask you to fill out a short servey about the applicaiton and tell me about any problems you had/bugs. Or submit an issue on GitHub (here). Anyways, hope those who use it find it helpful and can help me out. Cheers!
 -AE (PikaJew002)
 
 ## License
