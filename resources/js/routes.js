@@ -10,12 +10,52 @@
 */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from './store.js';
 
 /*
     Extends Vue to use Vue Router
 */
-Vue.use( VueRouter )
+Vue.use(VueRouter)
 
+/*
+    This will cehck to see if the user is authenticated or not.
+*/
+function requireAuth(to, from, next) {
+  /*
+  Determines where we should send the user.
+  */
+  function proceed() {
+    /*
+      If the user has been loaded determine where we should
+      send the user.
+    */
+    if(store.getters.getUserLoadStatus() == 2) {
+      /*
+        If the user is not empty, that means there's a user
+        authenticated we allow them to continue. Otherwise, we
+        send the user back to the home page.
+      */
+      if(store.getters.getUser != '') {
+        next();
+      } else {
+        next('/');
+      }
+    } else {
+      next('/');
+    }
+  }
+
+  if(store.getters.getUserLoadStatus() != 2) {
+    store.dispatch('loadUser');
+    store.watch(store.getters.getUserLoadStatus, function() {
+      if(store.getters.getUserLoadStatus() == 2 || store.getters.getUserLoadStatus() == 3) {
+        proceed();
+      }
+    });
+  } else {
+    proceed();
+  }
+}
 
 /*
     Makes a new VueRouter that we will use to run all of the routes
@@ -24,54 +64,21 @@ Vue.use( VueRouter )
 export default new VueRouter({
     routes: [
         {
-            path: '/',
-            name: 'home',
-            component: Vue.component( 'Home', require( './pages/Home.vue' ) )
+          path: '/home',
+          name: 'home',
+          component: Vue.component('Home', require('./pages/Home.vue').default),
+          beforeEnter: requireAuth
         },
         {
-            path: '/incomes',
-            name: 'incomes',
-            component: Vue.component( 'Incomes', require( './pages/incomes/Incomes.vue' ) )
+          path: '/',
+          name: 'vistor',
+          component: Vue.component('Visitor', require('./pages/Vistor.vue').default)
         },
         {
-          path: '/incomes/new',
-          name: 'newincomes',
-          component: Vue.component( 'NewIncome', require( './pages/incomes/NewIncome.vue' ) )
-        },
-        {
-          path: '/incomes/:id',
-          name: 'income',
-          component: Vue.component( 'Income', require( './pages/incomes/Income.vue' ) )
-        },
-        {
-            path: '/bills',
-            name: 'bills',
-            component: Vue.component( 'Bills', require( './pages/bills/Bills.vue' ) )
-        },
-        {
-          path: '/bills/new',
-          name: 'newbill',
-          component: Vue.component( 'NewBill', require( './pages/bills/NewBill.vue' ) )
-        },
-        {
-          path: '/bills/:id',
-          name: 'bill',
-          component: Vue.component( 'Bill', require( './pages/bills/Bill.vue' ) )
-        },
-        {
-            path: '/paychecks',
-            name: 'paychecks',
-            component: Vue.component( 'Paychecks', require( './pages/paychecks/Paychecks.vue' ) )
-        },
-        {
-          path: '/paychecks/new',
-          name: 'newpaycheck',
-          component: Vue.component( 'NewPaycheck', require( './pages/paychecks/NewPaycheck.vue' ) )
-        },
-        {
-          path: '/paychecks/:id',
-          name: 'paycheck',
-          component: Vue.component( 'Paycheck', require( './pages/paychecks/Paycheck.vue' ) )
+          path: '/incomes',
+          name: 'incomes',
+          component: Vue.component('Incomes', require('./pages/incomes/Incomes.vue').default),
+          beforeEnter: requireAuth
         }
     ]
 });

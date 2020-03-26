@@ -20,7 +20,7 @@ class CreateBillsTable extends Migration
             $table->double('amount', 7, 2);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
